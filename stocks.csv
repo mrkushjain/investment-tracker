@@ -1,0 +1,66 @@
+id,person,ticker,company,account,buy_date,buy_price_usd,buy_qty,sell_date,sell_price_usd,sell_qty,usd_inr_buy,usd_inr_sell,brokerage_usd,notes
+1,Kanchan,SLAB,Silicon Laboratories,Schwab,2023-11-30,91.58,10,2026-09-01,219.00,10,83.41,94.50,0,RSU lot 1 · grant Nov-15-2021 · SBI TTBR buy ₹83.41 (Nov-2023) · sell ₹94.50 (Sep-01-2026)
+2,Kanchan,SLAB,Silicon Laboratories,Schwab,2022-11-15,120.38,9,2026-09-01,219.00,9,81.05,94.50,0,RSU lot 2 · grant Nov-15-2021 · SBI TTBR buy ₹81.05 (Nov-2022) · sell ₹94.50 (Sep-01-2026)
+3,Kush,CRM,Salesforce,E*TRADE,2026-06-15,164.55,49,2026-09-01,263.00,49,84.50,94.50,2.29,ESPP · grant 12/16/2025 · purchase $139.87 · FMV $164.55 · disqualifying disp · ⚠️ verify SBI TTBR Jun-15-2026
+4,Kush,CRM,Salesforce,E*TRADE,2025-06-15,258.40,35,2026-09-01,263.00,35,84.30,94.50,1.64,ESPP · grant 12/15/2024 · purchase $219.64 · FMV $258.40 · disqualifying disp · US=LT but India=STCG (443d<730d) · ⚠️ verify SBI TTBR Jun-15-2025
+5,Kush,CRM,Salesforce,E*TRADE,2025-12-15,254.58,36,2026-09-01,263.00,36,84.80,94.50,1.68,ESPP · grant 06/16/2025 · purchase $216.39 · FMV $254.58 · disqualifying disp · ⚠️ verify SBI TTBR Dec-15-2025
+6,Kush,CRM,Salesforce,E*TRADE,2025-12-22,262.63,29,2026-09-01,263.00,29,84.80,94.50,0.86,RSU · grant 00218444 · vest period 2 · vest 12/22/2025 · FMV $262.63 · ⚠️ verify SBI TTBR Dec-22-2025
+7,Kush,CRM,Salesforce,E*TRADE,2026-03-22,195.38,29,2026-09-01,263.00,29,87.00,94.50,0.86,RSU · grant 00218444 · vest period 3 · vest 03/22/2026 · FMV $195.38 · ⚠️ verify SBI TTBR Mar-22-2026
+8,Kush,CRM,Salesforce,E*TRADE,2026-06-22,150.12,29,2026-09-01,263.00,29,84.50,94.50,0.86,RSU · grant 00218444 · vest period 4 · vest 06/22/2026 · FMV $150.12 · ⚠️ verify SBI TTBR Jun-22-2026
+9,Kush,AMZN,Amazon,IndMoney,2022-03-14,145.55,0.5240,2026-09-02,255.90,0.5240,74.97,94.50,0.23,IndMoney SIP · invested $76.27 · pre-split $2911.01 · AMZN 20:1 split Jun-06-2022 · SBI TTBR Mar-2022 ₹74.97
+10,Kush,AMZN,Amazon,IndMoney,2022-03-15,146.05,0.1962,2026-09-02,255.90,0.1962,74.97,94.50,0.09,IndMoney SIP · invested $28.66 · pre-split $2920.92 · SBI TTBR Mar-2022 ₹74.97
+11,Kush,AMZN,Amazon,IndMoney,2022-03-16,151.33,2.2865,2026-09-02,255.90,2.2865,74.97,94.50,1.01,IndMoney SIP · invested $346.00 · pre-split $3026.56 · SBI TTBR Mar-2022 ₹74.97
+12,Kush,AMZN,Amazon,IndMoney,2022-03-17,156.96,0.6372,2026-09-02,255.90,0.6372,74.97,94.50,0.28,IndMoney SIP · invested $100.00 · pre-split $3139.18 · SBI TTBR Mar-2022 ₹74.97
+13,Kush,AMZN,Amazon,IndMoney,2022-03-24,162.27,3.9711,2026-09-02,255.90,3.9711,74.97,94.50,1.75,IndMoney SIP · invested $644.39 · pre-split $3245.39 · SBI TTBR Mar-2022 ₹74.97
+14,Kush,AMZN,Amazon,IndMoney,2022-03-31,165.08,7.8572,2026-09-02,255.90,7.8572,74.97,94.50,3.46,IndMoney SIP · invested $1297.00 · pre-split $3301.58 · SBI TTBR Mar-2022 ₹74.97
+15,Kush,AMZN,Amazon,IndMoney,2022-04-07,157.23,7.4124,2026-09-02,255.90,7.4124,75.85,94.50,3.26,IndMoney SIP · invested $1165.41 · pre-split $3144.50 · SBI TTBR Apr-2022 ₹75.85
+16,Kush,AMZN,Amazon,IndMoney,2022-04-28,144.13,16.0346,2026-09-02,255.90,16.0346,75.85,94.50,7.05,IndMoney SIP · invested $2311.08 · pre-split $2882.64 · SBI TTBR Apr-2022 ₹75.85
+17,Kush,AMZN,Amazon,IndMoney,2022-04-29,129.95,21.9344,2026-09-02,255.90,21.9344,75.85,94.50,9.65,IndMoney SIP · invested $2850.41 · pre-split $2599.00 · SBI TTBR Apr-2022 ₹75.85
+18,Kush,AMZN,Amazon,IndMoney,2022-04-29,127.34,3.3158,2026-09-02,255.90,3.3158,75.85,94.50,1.46,IndMoney SIP · invested $422.24 · pre-split $2546.72 · SBI TTBR Apr-2022 ₹75.85
+19,Kush,AMZN,Amazon,IndMoney,2022-04-29,127.26,4.9175,2026-09-02,255.90,4.9175,75.85,94.50,2.16,IndMoney SIP · invested $625.85 · pre-split $2545.20 · SBI TTBR Apr-2022 ₹75.85
+20,Kanchan,AMZN,Amazon,IndMoney,2022-03-14,145.98,0.0893,2026-09-02,256.50,0.0893,74.97,94.50,0.01,IndMoney SIP · invested $13.04 · pre-split $2919.62 · AMZN 20:1 split Jun-06-2022 · SBI TTBR Mar-2022 ₹74.97
+21,Kanchan,AMZN,Amazon,IndMoney,2022-03-15,145.41,1.6893,2026-09-02,256.50,1.6893,74.97,94.50,0.25,IndMoney SIP · invested $245.63 · pre-split $2908.13 · SBI TTBR Mar-2022 ₹74.97
+22,Kanchan,AMZN,Amazon,IndMoney,2022-03-26,164.98,1.8108,2026-09-02,256.50,1.8108,74.97,94.50,0.27,IndMoney SIP · invested $298.75 · pre-split $3299.50 · SBI TTBR Mar-2022 ₹74.97
+23,Kanchan,AMZN,Amazon,IndMoney,2022-03-31,164.78,1.8206,2026-09-02,256.50,1.8206,74.97,94.50,0.27,IndMoney SIP · invested $300.00 · pre-split $3295.60 · SBI TTBR Mar-2022 ₹74.97
+24,Kanchan,AMZN,Amazon,IndMoney,2022-04-01,164.15,0.3777,2026-09-02,256.50,0.3777,75.85,94.50,0.06,IndMoney SIP · invested $62.00 · pre-split $3282.99 · SBI TTBR Apr-2022 ₹75.85
+25,Kanchan,AMZN,Amazon,IndMoney,2022-04-06,158.52,0.5992,2026-09-02,256.50,0.5992,75.85,94.50,0.09,IndMoney SIP · invested $95.00 · pre-split $3170.34 · SBI TTBR Apr-2022 ₹75.85
+26,Kanchan,AMZN,Amazon,IndMoney,2022-04-06,157.42,1.9054,2026-09-02,256.50,1.9054,75.85,94.50,0.28,IndMoney SIP · invested $300.00 · pre-split $3148.41 · SBI TTBR Apr-2022 ₹75.85
+27,Kanchan,AMZN,Amazon,IndMoney,2022-04-06,158.98,3.1451,2026-09-02,256.50,3.1451,75.85,94.50,0.46,IndMoney SIP · invested $500.00 · pre-split $3179.66 · SBI TTBR Apr-2022 ₹75.85
+28,Kanchan,AMZN,Amazon,IndMoney,2022-04-26,140.80,1.0937,2026-09-02,256.50,1.0937,75.85,94.50,0.16,IndMoney SIP · invested $154.00 · pre-split $2816.04 · SBI TTBR Apr-2022 ₹75.85
+29,Kanchan,AMZN,Amazon,IndMoney,2022-04-26,140.92,20.0000,2026-09-02,256.50,20.0000,75.85,94.50,2.95,IndMoney SIP · invested $2818.48 · pre-split $2818.48 (1 pre-split share) · SBI TTBR Apr-2022 ₹75.85
+30,Kanchan,AMZN,Amazon,IndMoney,2022-04-27,140.19,6.8975,2026-09-02,256.50,6.8975,75.85,94.50,1.02,IndMoney SIP · invested $967.00 · pre-split $2803.83 · SBI TTBR Apr-2022 ₹75.85
+31,Kanchan,AMZN,Amazon,IndMoney,2022-04-29,128.34,7.5328,2026-09-02,256.50,7.5328,75.85,94.50,1.11,IndMoney SIP · invested $966.75 · pre-split $2566.87 · SBI TTBR Apr-2022 ₹75.85
+32,Kanchan,AMZN,Amazon,IndMoney,2022-04-29,125.65,7.6957,2026-09-02,256.50,7.6957,75.85,94.50,1.14,IndMoney SIP · invested $967.00 · pre-split $2513.07 · SBI TTBR Apr-2022 ₹75.85
+33,Kanchan,AMZN,Amazon,IndMoney,2022-05-02,118.80,8.1564,2026-09-02,256.50,8.1564,76.90,94.50,1.20,IndMoney SIP · invested $969.00 · pre-split $2376.01 · SBI TTBR May-2022 ₹76.90
+34,Kanchan,AMZN,Amazon,IndMoney,2022-05-02,120.48,8.0103,2026-09-02,256.50,8.0103,76.90,94.50,1.18,IndMoney SIP · invested $965.00 · pre-split $2409.67 · SBI TTBR May-2022 ₹76.90
+35,Kanchan,AMZN,Amazon,IndMoney,2022-05-03,125.13,7.8955,2026-09-02,256.50,7.8955,76.90,94.50,1.17,IndMoney SIP · invested $988.00 · pre-split $2502.69 · SBI TTBR May-2022 ₹76.90
+36,Kanchan,AMZN,Amazon,IndMoney,2022-05-04,121.45,7.8222,2026-09-02,256.50,7.8222,76.90,94.50,1.15,IndMoney SIP · invested $950.00 · pre-split $2428.91 · SBI TTBR May-2022 ₹76.90
+37,Kanchan,AMZN,Amazon,IndMoney,2022-05-04,119.00,80.0000,2026-09-02,256.50,80.0000,76.90,94.50,11.81,IndMoney SIP · invested $9520.00 (4 pre-split shares) · pre-split $2380.00 · SBI TTBR May-2022 ₹76.90
+38,Kanchan,AMZN,Amazon,IndMoney,2022-05-04,120.49,17.7430,2026-09-02,256.50,17.7430,76.90,94.50,2.62,IndMoney SIP · invested $2138.00 · pre-split $2409.81 · SBI TTBR May-2022 ₹76.90
+39,Kanchan,AMZN,Amazon,IndMoney,2022-05-05,116.12,8.3966,2026-09-02,256.50,8.3966,76.90,94.50,1.24,IndMoney SIP · invested $975.00 · pre-split $2322.33 · SBI TTBR May-2022 ₹76.90
+40,Kanchan,AMZN,Amazon,IndMoney,2022-05-06,113.89,8.5699,2026-09-02,256.50,8.5699,76.90,94.50,1.26,IndMoney SIP · invested $976.00 · pre-split $2277.74 · SBI TTBR May-2022 ₹76.90
+41,Kanchan,AMZN,Amazon,IndMoney,2022-05-09,109.75,8.8934,2026-09-02,256.50,8.8934,76.90,94.50,1.31,IndMoney SIP · invested $976.00 · pre-split $2194.98 · SBI TTBR May-2022 ₹76.90
+42,Kanchan,AMZN,Amazon,IndMoney,2022-05-10,109.66,8.8277,2026-09-02,256.50,8.8277,76.90,94.50,1.30,IndMoney SIP · invested $968.00 · pre-split $2193.12 · SBI TTBR May-2022 ₹76.90
+20,Kanchan,AMZN,Amazon,IndMoney,2022-03-14,145.98,0.0893,2026-09-02,256.50,0.0893,74.97,94.50,0.01,IndMoney SIP · invested $13.04 · pre-split $2919.62 · AMZN 20:1 split Jun-06-2022 · SBI TTBR Mar-2022 ₹74.97
+21,Kanchan,AMZN,Amazon,IndMoney,2022-03-15,145.41,1.6893,2026-09-02,256.50,1.6893,74.97,94.50,0.25,IndMoney SIP · invested $245.63 · pre-split $2908.13 · SBI TTBR Mar-2022 ₹74.97
+22,Kanchan,AMZN,Amazon,IndMoney,2022-03-26,164.98,1.8108,2026-09-02,256.50,1.8108,74.97,94.50,0.27,IndMoney SIP · invested $298.75 · pre-split $3299.50 · SBI TTBR Mar-2022 ₹74.97
+23,Kanchan,AMZN,Amazon,IndMoney,2022-03-31,164.78,1.8206,2026-09-02,256.50,1.8206,74.97,94.50,0.27,IndMoney SIP · invested $300.00 · pre-split $3295.60 · SBI TTBR Mar-2022 ₹74.97
+24,Kanchan,AMZN,Amazon,IndMoney,2022-04-01,164.15,0.3777,2026-09-02,256.50,0.3777,75.85,94.50,0.06,IndMoney SIP · invested $62.00 · pre-split $3282.99 · SBI TTBR Apr-2022 ₹75.85
+25,Kanchan,AMZN,Amazon,IndMoney,2022-04-06,158.52,0.5992,2026-09-02,256.50,0.5992,75.85,94.50,0.09,IndMoney SIP · invested $95.00 · pre-split $3170.34 · SBI TTBR Apr-2022 ₹75.85
+26,Kanchan,AMZN,Amazon,IndMoney,2022-04-06,157.42,1.9054,2026-09-02,256.50,1.9054,75.85,94.50,0.28,IndMoney SIP · invested $300.00 · pre-split $3148.41 · SBI TTBR Apr-2022 ₹75.85
+27,Kanchan,AMZN,Amazon,IndMoney,2022-04-06,158.98,3.1451,2026-09-02,256.50,3.1451,75.85,94.50,0.46,IndMoney SIP · invested $500.00 · pre-split $3179.66 · SBI TTBR Apr-2022 ₹75.85
+28,Kanchan,AMZN,Amazon,IndMoney,2022-04-26,140.80,1.0937,2026-09-02,256.50,1.0937,75.85,94.50,0.16,IndMoney SIP · invested $154.00 · pre-split $2816.04 · SBI TTBR Apr-2022 ₹75.85
+29,Kanchan,AMZN,Amazon,IndMoney,2022-04-26,140.92,20.0000,2026-09-02,256.50,20.0000,75.85,94.50,2.95,IndMoney SIP · invested $2818.48 (1 pre-split share) · pre-split $2818.48 · SBI TTBR Apr-2022 ₹75.85
+30,Kanchan,AMZN,Amazon,IndMoney,2022-04-27,140.19,6.8975,2026-09-02,256.50,6.8975,75.85,94.50,1.02,IndMoney SIP · invested $967.00 · pre-split $2803.83 · SBI TTBR Apr-2022 ₹75.85
+31,Kanchan,AMZN,Amazon,IndMoney,2022-04-29,128.34,7.5328,2026-09-02,256.50,7.5328,75.85,94.50,1.11,IndMoney SIP · invested $966.75 · pre-split $2566.87 · SBI TTBR Apr-2022 ₹75.85
+32,Kanchan,AMZN,Amazon,IndMoney,2022-04-29,125.65,7.6957,2026-09-02,256.50,7.6957,75.85,94.50,1.14,IndMoney SIP · invested $967.00 · pre-split $2513.07 · SBI TTBR Apr-2022 ₹75.85
+33,Kanchan,AMZN,Amazon,IndMoney,2022-05-02,118.80,8.1564,2026-09-02,256.50,8.1564,76.90,94.50,1.20,IndMoney SIP · invested $969.00 · pre-split $2376.01 · SBI TTBR May-2022 ₹76.90
+34,Kanchan,AMZN,Amazon,IndMoney,2022-05-02,120.48,8.0103,2026-09-02,256.50,8.0103,76.90,94.50,1.18,IndMoney SIP · invested $965.00 · pre-split $2409.67 · SBI TTBR May-2022 ₹76.90
+35,Kanchan,AMZN,Amazon,IndMoney,2022-05-03,125.13,7.8955,2026-09-02,256.50,7.8955,76.90,94.50,1.17,IndMoney SIP · invested $988.00 · pre-split $2502.69 · SBI TTBR May-2022 ₹76.90
+36,Kanchan,AMZN,Amazon,IndMoney,2022-05-04,121.45,7.8222,2026-09-02,256.50,7.8222,76.90,94.50,1.15,IndMoney SIP · invested $950.00 · pre-split $2428.91 · SBI TTBR May-2022 ₹76.90
+37,Kanchan,AMZN,Amazon,IndMoney,2022-05-04,119.00,80.0000,2026-09-02,256.50,80.0000,76.90,94.50,11.81,IndMoney SIP · invested $9520.00 (4 pre-split shares) · pre-split $2380.00 · SBI TTBR May-2022 ₹76.90
+38,Kanchan,AMZN,Amazon,IndMoney,2022-05-04,120.49,17.7430,2026-09-02,256.50,17.7430,76.90,94.50,2.62,IndMoney SIP · invested $2138.00 · pre-split $2409.81 · SBI TTBR May-2022 ₹76.90
+39,Kanchan,AMZN,Amazon,IndMoney,2022-05-05,116.12,8.3966,2026-09-02,256.50,8.3966,76.90,94.50,1.24,IndMoney SIP · invested $975.00 · pre-split $2322.33 · SBI TTBR May-2022 ₹76.90
+40,Kanchan,AMZN,Amazon,IndMoney,2022-05-06,113.89,8.5699,2026-09-02,256.50,8.5699,76.90,94.50,1.26,IndMoney SIP · invested $976.00 · pre-split $2277.74 · SBI TTBR May-2022 ₹76.90
+41,Kanchan,AMZN,Amazon,IndMoney,2022-05-09,109.75,8.8934,2026-09-02,256.50,8.8934,76.90,94.50,1.31,IndMoney SIP · invested $976.00 · pre-split $2194.98 · SBI TTBR May-2022 ₹76.90
+42,Kanchan,AMZN,Amazon,IndMoney,2022-05-10,109.66,8.8277,2026-09-02,256.50,8.8277,76.90,94.50,1.30,IndMoney SIP · invested $968.00 · pre-split $2193.12 · SBI TTBR May-2022 ₹76.90

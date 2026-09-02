@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>US Stocks — Capital Gains Tracker</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f1f5f9;color:#1e293b}
+
+.header{background:linear-gradient(135deg,#0b1d35,#1a3557 45%,#1d4ed8);color:#fff;padding:24px 32px 0;position:relative;overflow:hidden}
+.header::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px,rgba(255,255,255,.10) 1px,transparent 0);background-size:22px 22px;pointer-events:none}
+.header h1{font-size:1.5rem;font-weight:700;position:relative}
+.header p{opacity:.8;font-size:.85rem;margin-top:4px;position:relative}
+
+/* ── Tabs ── */
+.tabs{display:flex;gap:4px;padding:18px 0 0;position:relative;z-index:1}
+.tab{padding:10px 28px;border-radius:10px 10px 0 0;font-size:.85rem;font-weight:700;cursor:pointer;
+     border:none;background:rgba(255,255,255,.15);color:rgba(255,255,255,.75);transition:all .15s}
+.tab:hover{background:rgba(255,255,255,.25);color:#fff}
+.tab.active-kanchan{background:#fff;color:#7c3aed}
+.tab.active-kush{background:#fff;color:#2563eb}
+.tab.active-combined{background:#fff;color:#0f172a}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;padding:24px 32px}
+.card{background:#fff;border-radius:14px;padding:18px 22px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.card-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748b}
+.card-value{font-size:1.55rem;font-weight:800;margin-top:4px}
+.card-sub{font-size:.75rem;color:#94a3b8;margin-top:2px}
+.c-green{color:#16a34a}.c-red{color:#dc2626}.c-blue{color:#2563eb}.c-orange{color:#ea580c}.c-purple{color:#7c3aed}
+
+.section{padding:0 32px 32px}
+.section-title{font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#64748b;
+               margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #e2e8f0}
+
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;
+      box-shadow:0 1px 4px rgba(0,0,0,.07);font-size:.83rem}
+thead tr{background:#1e3a5f;color:#fff}
+th{padding:11px 13px;text-align:right;font-weight:700;font-size:.74rem;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+tbody tr{border-bottom:1px solid #f1f5f9}
+tbody tr:hover{background:#f8fafc}
+td{padding:11px 13px;text-align:right;vertical-align:middle}
+td:first-child{text-align:left}
+
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:.71rem;font-weight:700;white-space:nowrap}
+.b-ltcg{background:#dcfce7;color:#166534}
+.b-stcg{background:#fef3c7;color:#b45309}
+.b-gain{background:#dcfce7;color:#166534}
+.b-loss{background:#fee2e2;color:#dc2626}
+.b-kanchan{background:#fdf4ff;color:#7e22ce}
+.b-kush{background:#eff6ff;color:#1d4ed8}
+
+.charts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+.chart-box{background:#fff;border-radius:14px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.chart-title{font-size:.82rem;font-weight:800;color:#374151;margin-bottom:14px}
+
+.tax-box{background:#fff;border-radius:14px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.07);border-left:4px solid #2563eb}
+.tax-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f1f5f9;font-size:.85rem}
+.tax-row:last-child{border-bottom:none;font-weight:800;font-size:.92rem;padding-top:10px}
+
+.info-box{background:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f1f5f9;font-size:.85rem}
+.info-row:last-child{border-bottom:none}
+
+.import-panel{background:#fff;border-radius:14px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:20px}
+.import-panel h3{font-size:.85rem;font-weight:800;color:#374151;margin-bottom:8px}
+textarea{width:100%;height:100px;font-family:monospace;font-size:.78rem;padding:10px;border:1px solid #e2e8f0;border-radius:8px;resize:vertical}
+select,input[type=text]{padding:7px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:.82rem}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;border:none}
+.btn-kanchan{background:#7c3aed;color:#fff}.btn-kanchan:hover{background:#6d28d9}
+.btn-kush{background:#2563eb;color:#fff}.btn-kush:hover{background:#1d4ed8}
+.btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+.btn-row{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;align-items:center}
+
+/* combined side-by-side */
+.split-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.split-grid{grid-template-columns:1fr}}
+@media(max-width:900px){#watchlistGrid{grid-template-columns:repeat(2,1fr)!important}}
+@media(max-width:500px){#watchlistGrid{grid-template-columns:1fr!important}}
+
+footer{text-align:center;padding:20px 32px;font-size:.75rem;color:#94a3b8;border-top:1px solid #e2e8f0;margin-top:8px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🇺🇸 US Stocks — Capital Gains Tracker</h1>
+  <p>Kush Jain &amp; Kanchan Handa · Indian ITR · Schedule FA + CG · FY 2026-27</p>
+  <div class="tabs">
+    <button class="tab active-kanchan" id="tab-kanchan" onclick="switchTab('kanchan')">👤 Kanchan Handa</button>
+    <button class="tab" id="tab-kush"    onclick="switchTab('kush')">👤 Kush Jain</button>
+    <button class="tab" id="tab-combined" onclick="switchTab('combined')">⚡ Combined</button>
+  </div>
+</div>
+
+<div class="section" style="padding-bottom:8px">
+  <div class="section-title">📈 Live Prices — Watchlist</div>
+  <div id="watchlistGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+
+    <div style="background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.07);height:130px">
+      <div class="tradingview-widget-container" style="height:130px">
+        <div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
+        {"symbol":"NASDAQ:SLAB","width":"100%","height":130,"colorTheme":"light","locale":"en","isTransparent":false}
+        </script>
+      </div>
+    </div>
+
+    <div style="background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.07);height:130px">
+      <div class="tradingview-widget-container" style="height:130px">
+        <div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
+        {"symbol":"NASDAQ:MSFT","width":"100%","height":130,"colorTheme":"light","locale":"en","isTransparent":false}
+        </script>
+      </div>
+    </div>
+
+    <div style="background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.07);height:130px">
+      <div class="tradingview-widget-container" style="height:130px">
+        <div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
+        {"symbol":"NYSE:CRM","width":"100%","height":130,"colorTheme":"light","locale":"en","isTransparent":false}
+        </script>
+      </div>
+    </div>
+
+    <div style="background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.07);height:130px">
+      <div class="tradingview-widget-container" style="height:130px">
+        <div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
+        {"symbol":"NASDAQ:AMZN","width":"100%","height":130,"colorTheme":"light","locale":"en","isTransparent":false}
+        </script>
+      </div>
+    </div>
+
+  </div>
+  <div style="font-size:.72rem;color:#94a3b8;margin-top:8px">Live data via TradingView · prices in USD · 15-min delay on free tier</div>
+</div>
+
+<div class="cards" id="summaryCards"></div>
+
+<div class="section">
+  <div class="section-title" id="overviewTitle">📊 Overview</div>
+  <div class="charts-grid">
+    <div class="chart-box"><div class="chart-title">Gain / Loss by Stock (INR)</div><canvas id="stockChart" height="220"></canvas></div>
+    <div class="chart-box"><div class="chart-title">LTCG vs STCG Split (INR)</div><canvas id="gainTypeChart" height="220"></canvas></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">🧾 Indian Tax Estimate (FY 2026-27)</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px">
+    <div class="tax-box" id="taxBox"></div>
+    <div class="info-box">
+      <div style="font-size:.78rem;font-weight:700;color:#374151;margin-bottom:10px">📋 Indian Tax Rules for Foreign Stocks</div>
+      <div class="info-row"><span style="color:#64748b">LTCG threshold</span><span style="font-weight:700">Held &gt; 24 months</span></div>
+      <div class="info-row"><span style="color:#64748b">LTCG rate (post Budget 2024)</span><span style="font-weight:700;color:#16a34a">12.5% (no indexation)</span></div>
+      <div class="info-row"><span style="color:#64748b">STCG rate</span><span style="font-weight:700;color:#d97706">Slab rate (est. 30%)</span></div>
+      <div class="info-row"><span style="color:#64748b">Currency conversion</span><span style="font-weight:700;color:#dc2626">SBI TTBR on transaction date</span></div>
+      <div class="info-row"><span style="color:#64748b">↳ SBI TTBR source</span><span style="font-size:.72rem"><a href="https://www.sbi.co.in/web/personal-banking/investments-deposits/govt-schemes/forex-rates" target="_blank" style="color:#2563eb">sbi.co.in forex rates</a></span></div>
+      <div class="info-row"><span style="color:#64748b">Schedule</span><span style="font-weight:700">ITR-2 / ITR-3 · Schedule FA + CG</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title" id="txTitle">📋 Transactions</div>
+  <div style="overflow-x:auto">
+    <table>
+      <thead><tr id="txHead"></tr></thead>
+      <tbody id="txBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">🏠 Proceeds Towards Property Purchase</div>
+  <div id="propertyBox" class="info-box"></div>
+</div>
+
+<div class="section">
+  <div class="section-title">➕ Add Transaction</div>
+  <div class="import-panel">
+    <h3>Paste CSV row</h3>
+    <p style="font-size:.74rem;color:#64748b;margin-bottom:8px">Format: <code>ticker, company, account, buy_date (YYYY-MM-DD), buy_price_usd, buy_qty, sell_date, sell_price_usd, sell_qty, usd_inr_buy (SBI TTBR), usd_inr_sell (SBI TTBR), brokerage_usd, notes</code></p>
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px;flex-wrap:wrap">
+      <label style="font-size:.82rem;font-weight:700">Person:</label>
+      <select id="importPerson">
+        <option value="Kanchan">Kanchan Handa</option>
+        <option value="Kush">Kush Jain</option>
+      </select>
+    </div>
+    <textarea id="csvInput" placeholder="AAPL, Apple Inc., Schwab, 2022-01-15, 150.00, 10, 2026-08-20, 220.00, 10, 83.00, 84.20, 0, notes"></textarea>
+    <div class="btn-row">
+      <button class="btn btn-kanchan" onclick="importCSV('Kanchan')">➕ Add for Kanchan</button>
+      <button class="btn btn-kush"    onclick="importCSV('Kush')">➕ Add for Kush</button>
+      <button class="btn btn-secondary" onclick="exportCSV('Kanchan')">⬇️ Export Kanchan CSV</button>
+      <button class="btn btn-secondary" onclick="exportCSV('Kush')">⬇️ Export Kush CSV</button>
+      <button class="btn btn-secondary" onclick="exportCSV('all')">⬇️ Export All CSV</button>
+      <button class="btn btn-secondary" onclick="clearAll()">🗑️ Clear All</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  US Stocks Capital Gains Tracker · Kush Jain &amp; Kanchan Handa · Last updated: <span id="lastUpdated"></span> ·
+  <span style="color:#dc2626">Tax estimates are indicative only — consult a CA for ITR filing.</span>
+</footer>
+
+<script>
+// ── Seed data ─────────────────────────────────────────────────────────────
+// person: 'Kanchan' or 'Kush'
+// usd_inr_*: SBI TTBR (Telegraphic Transfer Buying Rate) on transaction date
+// Source: https://www.sbi.co.in/web/personal-banking/investments-deposits/govt-schemes/forex-rates
+// For RSU: buy_price_usd = FMV at vest (cost basis for CGT). For ESPP: buy_price_usd = actual purchase price.
+// ⚠️ CRM buy rates are placeholders — look up exact SBI TTBR for each buy date before ITR filing
+const SEED = [
+  // ── Kanchan — SLAB (Schwab RSU) ──────────────────────────────────────────
+  {
+    id:1, person:'Kanchan', ticker:'SLAB', company:'Silicon Laboratories', account:'Schwab',
+    buy_date:'2023-11-30', buy_price_usd:91.58,  buy_qty:10,
+    sell_date:'2026-09-01', sell_price_usd:219.00, sell_qty:10,
+    usd_inr_buy:83.41, usd_inr_sell:94.50, brokerage_usd:0,
+    notes:'RSU lot 1 · grant Nov-15-2021 · SBI TTBR buy 83.41 (Nov-30-2023) · SBI TTBR sell 94.50 (Sep-01-2026)'
+  },
+  {
+    id:2, person:'Kanchan', ticker:'SLAB', company:'Silicon Laboratories', account:'Schwab',
+    buy_date:'2022-11-15', buy_price_usd:120.38, buy_qty:9,
+    sell_date:'2026-09-01', sell_price_usd:219.00, sell_qty:9,
+    usd_inr_buy:81.05, usd_inr_sell:94.50, brokerage_usd:0,
+    notes:'RSU lot 2 · grant Nov-15-2021 · SBI TTBR buy 81.05 (Nov-15-2022) · SBI TTBR sell 94.50 (Sep-01-2026)'
+  },
+  // ── Kush — CRM (E*TRADE ESPP + RSU) · sell Sep-01-2026 @ $263 limit ─────
+  // ⚠️ All usd_inr_buy are PLACEHOLDERS — verify from SBI TTBR on each buy date
+  // Brokerage: E*TRADE $5.61 for 120 ESPP shares + $6.07 for 205 RSU shares (distributed pro-rata)
+  {
+    id:3, person:'Kush', ticker:'CRM', company:'Salesforce', account:'E*TRADE',
+    buy_date:'2026-06-15', buy_price_usd:164.55, buy_qty:49,
+    sell_date:'2026-09-01', sell_price_usd:263.00, sell_qty:49,
+    usd_inr_buy:84.50, usd_inr_sell:94.50, brokerage_usd:2.29,
+    notes:'ESPP · grant 12/16/2025 · purchase $139.87 · FMV $164.55 · disqualifying disp · ⚠️ verify SBI TTBR Jun-15-2026'
+  },
+  {
+    id:4, person:'Kush', ticker:'CRM', company:'Salesforce', account:'E*TRADE',
+    buy_date:'2025-06-15', buy_price_usd:258.40, buy_qty:35,
+    sell_date:'2026-09-01', sell_price_usd:263.00, sell_qty:35,
+    usd_inr_buy:84.30, usd_inr_sell:94.50, brokerage_usd:1.64,
+    notes:'ESPP · grant 12/15/2024 · purchase $219.64 · FMV $258.40 · disqualifying disp · US=LT but India=STCG (443d<730d) · ⚠️ verify SBI TTBR Jun-15-2025'
+  },
+  {
+    id:5, person:'Kush', ticker:'CRM', company:'Salesforce', account:'E*TRADE',
+    buy_date:'2025-12-15', buy_price_usd:254.58, buy_qty:36,
+    sell_date:'2026-09-01', sell_price_usd:263.00, sell_qty:36,
+    usd_inr_buy:84.80, usd_inr_sell:94.50, brokerage_usd:1.68,
+    notes:'ESPP · grant 06/16/2025 · purchase $216.39 · FMV $254.58 · disqualifying disp · ⚠️ verify SBI TTBR Dec-15-2025'
+  },
+  {
+    id:6, person:'Kush', ticker:'CRM', company:'Salesforce', account:'E*TRADE',
+    buy_date:'2025-12-22', buy_price_usd:262.63, buy_qty:29,
+    sell_date:'2026-09-01', sell_price_usd:263.00, sell_qty:29,
+    usd_inr_buy:84.80, usd_inr_sell:94.50, brokerage_usd:0.86,
+    notes:'RSU · grant 00218444 · grant 09/22/2024 · vest period 2 · vest 12/22/2025 · FMV $262.63 · ⚠️ verify SBI TTBR Dec-22-2025'
+  },
+  {
+    id:7, person:'Kush', ticker:'CRM', company:'Salesforce', account:'E*TRADE',
+    buy_date:'2026-03-22', buy_price_usd:195.38, buy_qty:29,
+    sell_date:'2026-09-01', sell_price_usd:263.00, sell_qty:29,
+    usd_inr_buy:87.00, usd_inr_sell:94.50, brokerage_usd:0.86,
+    notes:'RSU · grant 00218444 · grant 09/22/2024 · vest period 3 · vest 03/22/2026 · FMV $195.38 · ⚠️ verify SBI TTBR Mar-22-2026'
+  },
+  {
+    id:8, person:'Kush', ticker:'CRM', company:'Salesforce', account:'E*TRADE',
+    buy_date:'2026-06-22', buy_price_usd:150.12, buy_qty:29,
+    sell_date:'2026-09-01', sell_price_usd:263.00, sell_qty:29,
+    usd_inr_buy:84.50, usd_inr_sell:94.50, brokerage_usd:0.86,
+    notes:'RSU · grant 00218444 · grant 09/22/2024 · vest period 4 · vest 06/22/2026 · FMV $150.12 · ⚠️ verify SBI TTBR Jun-22-2026'
+  },
+  // NOTE: E*TRADE order shows 205 RSU total; only 87 (3×29) captured above. Add remaining lots when available.
+
+  // ── Kush — AMZN (IndMoney fractional) · sell Sep-02-2026 @ $256 limit 1-day ──
+  // All bought Mar–Apr 2022 (pre-AMZN 20:1 split Jun-06-2022). Prices below are post-split (original/20).
+  // Total charges $30.38 for 69.08709666 shares = $0.4398/share, distributed pro-rata below.
+  // SBI TTBR confirmed: Mar 2022 = ₹74.97 · Apr 2022 = ₹75.85
+  // ⚠️ usd_inr_sell: verify SBI TTBR for Sep-02-2026 (Sep-01-2026 confirmed ₹94.50)
+  {
+    id:9, person:'Kush', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-03-14', buy_price_usd:145.55, buy_qty:0.5240,
+    sell_date:'2026-09-02', sell_price_usd:255.90, sell_qty:0.5240,
+    usd_inr_buy:74.97, usd_inr_sell:94.50, brokerage_usd:0.23,
+    notes:'IndMoney SIP · invested $76.27 · pre-split $2911.01 · AMZN 20:1 split Jun-06-2022 · SBI TTBR Mar-2022 ₹74.97'
+  },
+  {
+    id:10, person:'Kush', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-03-15', buy_price_usd:146.05, buy_qty:0.1962,
+    sell_date:'2026-09-02', sell_price_usd:255.90, sell_qty:0.1962,
+    usd_inr_buy:74.97, usd_inr_sell:94.50, brokerage_usd:0.09,
+    notes:'IndMoney SIP · invested $28.66 · pre-split $2920.92 · SBI TTBR Mar-2022 ₹74.97'
+  },
+  {
+    id:11, person:'Kush', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-03-16', buy_price_usd:151.33, buy_qty:2.2865,
+    sell_date:'2026-09-02', sell_price_usd:255.90, sell_qty:2.2865,
+    usd_inr_buy:74.97, usd_inr_sell:94.50, brokerage_usd:1.01,
+    notes:'IndMoney SIP · invested $346.00 · pre-split $3026.56 · SBI TTBR Mar-2022 ₹74.97'
+  },
+  {
+    id:12, person:'Kush', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-03-17', buy_price_usd:156.96, buy_qty:0.6372,
+    sell_date:'2026-09-02', sell_price_usd:255.90, sell_qty:0.6372,
+    usd_inr_buy:74.97, usd_inr_sell:94.50, brokerage_usd:0.28,
+    notes:'IndMoney SIP · invested $100.00 · pre-split $3139.18 · SBI TTBR Mar-2022 ₹74.97'
+  },
+  {
+    id:13, person:'Kush', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-03-24', buy_price_usd:162.27, buy_qty:3.9711,
+    sell_date:'2026-09-02', sell_price_usd:255.90, sell_qty:3.9711,
+    usd_inr_buy:74.97, usd_inr_sell:94.50, brokerage_usd:1.75,
+    notes:'IndMoney SIP · invested $644.39 · pre-split $3245.39 · SBI TTBR Mar-2022 ₹74.97'
+  },
+  {
+    id:14, person:'Kush', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-03-31', buy_price_usd:165.08, buy_qty:7.8572,
+    sell_date:'2026-09-02', sell_price_usd:255.90, sell_qty:7.8572,
+    usd_inr_buy:74.97, usd_inr_sell:94.50, brokerage_usd:3.46,
+    notes:'IndMoney SIP · invested $1297.00 · pre-split $3301.58 · SBI TTBR Mar-2022 ₹74.97'
+  },
+  {
+    id:15, person:'Kush', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-04-07', buy_price_usd:157.23, buy_qty:7.4124,
+    sell_date:'2026-09-02', sell_price_usd:255.90, sell_qty:7.4124,
+    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:3.26,
+    notes:'IndMoney SIP · invested $1165.41 · pre-split $3144.50 · SBI TTBR Apr-2022 ₹75.85'
+  },
+  {
+    id:16, person:'Kush', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-04-28', buy_price_usd:144.13, buy_qty:16.0346,
+    sell_date:'2026-09-02', sell_price_usd:255.90, sell_qty:16.0346,
+    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:7.05,
+    notes:'IndMoney SIP · invested $2311.08 · pre-split $2882.64 · SBI TTBR Apr-2022 ₹75.85'
+  },
+  {
+    id:17, person:'Kush', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-04-29', buy_price_usd:129.95, buy_qty:21.9344,
+    sell_date:'2026-09-02', sell_price_usd:255.90, sell_qty:21.9344,
+    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:9.65,
+    notes:'IndMoney SIP · invested $2850.41 · pre-split $2599.00 · SBI TTBR Apr-2022 ₹75.85'
+  },
+  {
+    id:18, person:'Kush', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-04-29', buy_price_usd:127.34, buy_qty:3.3158,
+    sell_date:'2026-09-02', sell_price_usd:255.90, sell_qty:3.3158,
+    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:1.46,
+    notes:'IndMoney SIP · invested $422.24 · pre-split $2546.72 · SBI TTBR Apr-2022 ₹75.85'
+  },
+  {
+    id:19, person:'Kush', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-04-29', buy_price_usd:127.26, buy_qty:4.9175,
+    sell_date:'2026-09-02', sell_price_usd:255.90, sell_qty:4.9175,
+    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:2.16,
+    notes:'IndMoney SIP · invested $625.85 · pre-split $2545.20 · SBI TTBR Apr-2022 ₹75.85'
+  },
+
+  // ── Kanchan — AMZN (IndMoney fractional) · sell Sep-02-2026 @ $256.5 limit 1-day ──
+  // All bought Mar–May 2022 (pre-AMZN 20:1 split Jun-06-2022). Prices are post-split (original/20).
+  // Total charges $32.31 for 218.97248616 shares = $0.14757/share, distributed pro-rata below.
+  // SBI TTBR confirmed: Mar 2022 ₹74.97 · Apr 2022 ₹75.85 · May 2022 ₹76.90
+  // ⚠️ usd_inr_sell: verify SBI TTBR for Sep-02-2026 (Sep-01-2026 confirmed ₹94.50)
+  // Note: a ~1 post-split share was sold on 18-Mar-2022 (separate FY2022-23 transaction, excluded)
+  {
+    id:20, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-03-14', buy_price_usd:145.98, buy_qty:0.0893,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:0.0893,
+    usd_inr_buy:74.97, usd_inr_sell:94.50, brokerage_usd:0.01,
+    notes:'IndMoney SIP · invested $13.04 · pre-split $2919.62 · AMZN 20:1 split Jun-06-2022 · SBI TTBR Mar-2022 ₹74.97'
+  },
+  {
+    id:21, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-03-15', buy_price_usd:145.41, buy_qty:1.6893,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:1.6893,
+    usd_inr_buy:74.97, usd_inr_sell:94.50, brokerage_usd:0.25,
+    notes:'IndMoney SIP · invested $245.63 · pre-split $2908.13 · SBI TTBR Mar-2022 ₹74.97'
+  },
+  {
+    id:22, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-03-26', buy_price_usd:164.98, buy_qty:1.8108,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:1.8108,
+    usd_inr_buy:74.97, usd_inr_sell:94.50, brokerage_usd:0.27,
+    notes:'IndMoney SIP · invested $298.75 · pre-split $3299.50 · SBI TTBR Mar-2022 ₹74.97'
+  },
+  {
+    id:23, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-03-31', buy_price_usd:164.78, buy_qty:1.8206,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:1.8206,
+    usd_inr_buy:74.97, usd_inr_sell:94.50, brokerage_usd:0.27,
+    notes:'IndMoney SIP · invested $300.00 · pre-split $3295.60 · SBI TTBR Mar-2022 ₹74.97'
+  },
+  {
+    id:24, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-04-01', buy_price_usd:164.15, buy_qty:0.3777,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:0.3777,
+    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:0.06,
+    notes:'IndMoney SIP · invested $62.00 · pre-split $3282.99 · SBI TTBR Apr-2022 ₹75.85'
+  },
+  {
+    id:25, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-04-06', buy_price_usd:158.52, buy_qty:0.5992,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:0.5992,
+    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:0.09,
+    notes:'IndMoney SIP · invested $95.00 · pre-split $3170.34 · SBI TTBR Apr-2022 ₹75.85'
+  },
+  {
+    id:26, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-04-06', buy_price_usd:157.42, buy_qty:1.9054,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:1.9054,
+    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:0.28,
+    notes:'IndMoney SIP · invested $300.00 · pre-split $3148.41 · SBI TTBR Apr-2022 ₹75.85'
+  },
+  {
+    id:27, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-04-06', buy_price_usd:158.98, buy_qty:3.1451,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:3.1451,
+    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:0.46,
+    notes:'IndMoney SIP · invested $500.00 · pre-split $3179.66 · SBI TTBR Apr-2022 ₹75.85'
+  },
+  {
+    id:28, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-04-26', buy_price_usd:140.80, buy_qty:1.0937,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:1.0937,
+    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:0.16,
+    notes:'IndMoney SIP · invested $154.00 · pre-split $2816.04 · SBI TTBR Apr-2022 ₹75.85'
+  },
+  {
+    id:29, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-04-26', buy_price_usd:140.92, buy_qty:20.0000,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:20.0000,
+    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:2.95,
+    notes:'IndMoney SIP · invested $2818.48 · pre-split $2818.48 (exactly 1 pre-split share) · SBI TTBR Apr-2022 ₹75.85'
+  },
+  {
+    id:30, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-04-27', buy_price_usd:140.19, buy_qty:6.8975,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:6.8975,
+    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:1.02,
+    notes:'IndMoney SIP · invested $967.00 · pre-split $2803.83 · SBI TTBR Apr-2022 ₹75.85'
+  },
+  {
+    id:31, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-04-29', buy_price_usd:128.34, buy_qty:7.5328,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:7.5328,
+    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:1.11,
+    notes:'IndMoney SIP · invested $966.75 · pre-split $2566.87 · SBI TTBR Apr-2022 ₹75.85'
+  },
+  {
+    id:32, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-04-29', buy_price_usd:125.65, buy_qty:7.6957,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:7.6957,
+    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:1.14,
+    notes:'IndMoney SIP · invested $967.00 · pre-split $2513.07 · SBI TTBR Apr-2022 ₹75.85'
+  },
+  {
+    id:33, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-05-02', buy_price_usd:118.80, buy_qty:8.1564,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:8.1564,
+    usd_inr_buy:76.90, usd_inr_sell:94.50, brokerage_usd:1.20,
+    notes:'IndMoney SIP · invested $969.00 · pre-split $2376.01 · SBI TTBR May-2022 ₹76.90'
+  },
+  {
+    id:34, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-05-02', buy_price_usd:120.48, buy_qty:8.0103,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:8.0103,
+    usd_inr_buy:76.90, usd_inr_sell:94.50, brokerage_usd:1.18,
+    notes:'IndMoney SIP · invested $965.00 · pre-split $2409.67 · SBI TTBR May-2022 ₹76.90'
+  },
+  {
+    id:35, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-05-03', buy_price_usd:125.13, buy_qty:7.8955,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:7.8955,
+    usd_inr_buy:76.90, usd_inr_sell:94.50, brokerage_usd:1.17,
+    notes:'IndMoney SIP · invested $988.00 · pre-split $2502.69 · SBI TTBR May-2022 ₹76.90'
+  },
+  {
+    id:36, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-05-04', buy_price_usd:121.45, buy_qty:7.8222,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:7.8222,
+    usd_inr_buy:76.90, usd_inr_sell:94.50, brokerage_usd:1.15,
+    notes:'IndMoney SIP · invested $950.00 · pre-split $2428.91 · SBI TTBR May-2022 ₹76.90'
+  },
+  {
+    id:37, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-05-04', buy_price_usd:119.00, buy_qty:80.0000,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:80.0000,
+    usd_inr_buy:76.90, usd_inr_sell:94.50, brokerage_usd:11.81,
+    notes:'IndMoney SIP · invested $9520.00 (4 pre-split shares) · pre-split $2380.00 · SBI TTBR May-2022 ₹76.90'
+  },
+  {
+    id:38, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-05-04', buy_price_usd:120.49, buy_qty:17.7430,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:17.7430,
+    usd_inr_buy:76.90, usd_inr_sell:94.50, brokerage_usd:2.62,
+    notes:'IndMoney SIP · invested $2138.00 · pre-split $2409.81 · SBI TTBR May-2022 ₹76.90'
+  },
+  {
+    id:39, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-05-05', buy_price_usd:116.12, buy_qty:8.3966,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:8.3966,
+    usd_inr_buy:76.90, usd_inr_sell:94.50, brokerage_usd:1.24,
+    notes:'IndMoney SIP · invested $975.00 · pre-split $2322.33 · SBI TTBR May-2022 ₹76.90'
+  },
+  {
+    id:40, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-05-06', buy_price_usd:113.89, buy_qty:8.5699,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:8.5699,
+    usd_inr_buy:76.90, usd_inr_sell:94.50, brokerage_usd:1.26,
+    notes:'IndMoney SIP · invested $976.00 · pre-split $2277.74 · SBI TTBR May-2022 ₹76.90'
+  },
+  {
+    id:41, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-05-09', buy_price_usd:109.75, buy_qty:8.8934,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:8.8934,
+    usd_inr_buy:76.90, usd_inr_sell:94.50, brokerage_usd:1.31,
+    notes:'IndMoney SIP · invested $976.00 · pre-split $2194.98 · SBI TTBR May-2022 ₹76.90'
+  },
+  {
+    id:42, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
+    buy_date:'2022-05-10', buy_price_usd:109.66, buy_qty:8.8277,
+    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:8.8277,
+    usd_inr_buy:76.90, usd_inr_sell:94.50, brokerage_usd:1.30,
+    notes:'IndMoney SIP · invested $968.00 · pre-split $2193.12 · SBI TTBR May-2022 ₹76.90'
+  },
+];
+
+// ── Store ─────────────────────────────────────────────────────────────────
+const KEY = 'us_stocks_v5';
+function load() {
+  try {
+    const s = JSON.parse(localStorage.getItem(KEY));
+    if (!s || s.length === 0) { save(SEED); return SEED; }
+    return s;
+  } catch { return SEED; }
+}
+function save(rows) { localStorage.setItem(KEY, JSON.stringify(rows)); }
+
+// ── Tab state ─────────────────────────────────────────────────────────────
+let activeTab = 'kanchan';
+function switchTab(tab) {
+  activeTab = tab;
+  ['kanchan','kush','combined'].forEach(t => {
+    const el = document.getElementById('tab-' + t);
+    el.className = 'tab' + (t === tab ? ' active-' + tab : '');
+  });
+  render();
+}
+
+// ── Calc ──────────────────────────────────────────────────────────────────
+function calcRow(r) {
+  const costUsd = r.buy_price_usd * r.buy_qty;
+  const procUsd = r.sell_price_usd * r.sell_qty;
+  const gainUsd = procUsd - costUsd - r.brokerage_usd;
+  const costInr = costUsd * r.usd_inr_buy;
+  const procInr = procUsd * r.usd_inr_sell;
+  const gainInr = procInr - costInr - (r.brokerage_usd * r.usd_inr_sell);
+  const days    = Math.round((new Date(r.sell_date) - new Date(r.buy_date)) / 86400000);
+  const type    = days > 730 ? 'LTCG' : 'STCG';
+  const taxInr  = gainInr > 0 ? gainInr * (type === 'LTCG' ? 0.125 : 0.30) : 0;
+  return { ...r, costUsd, procUsd, gainUsd, costInr, procInr, gainInr, days, type, taxInr };
+}
+
+// ── Format ────────────────────────────────────────────────────────────────
+const fmtINR = v => '₹' + Math.abs(Math.round(v)).toLocaleString('en-IN');
+const fmtUSD = v => '$' + Math.abs(+v).toFixed(2);
+const sgn    = v => v < 0 ? '−' : '';
+
+function stats(rows) {
+  return {
+    proc:  rows.reduce((s,r) => s+r.procInr, 0),
+    cost:  rows.reduce((s,r) => s+r.costInr, 0),
+    gain:  rows.reduce((s,r) => s+r.gainInr, 0),
+    gainU: rows.reduce((s,r) => s+r.gainUsd, 0),
+    ltcg:  rows.filter(r=>r.type==='LTCG').reduce((s,r)=>s+r.gainInr,0),
+    stcg:  rows.filter(r=>r.type==='STCG').reduce((s,r)=>s+r.gainInr,0),
+    tax:   rows.reduce((s,r)=>s+r.taxInr,0),
+  };
+}
+
+// ── Render ────────────────────────────────────────────────────────────────
+let chartA, chartB;
+
+function render() {
+  const all      = load().map(calcRow);
+  const kanchan  = all.filter(r => r.person === 'Kanchan');
+  const kush     = all.filter(r => r.person === 'Kush');
+  const rows     = activeTab === 'kanchan' ? kanchan : activeTab === 'kush' ? kush : all;
+  const accentColor = activeTab === 'kanchan' ? '#7c3aed' : activeTab === 'kush' ? '#2563eb' : '#0f172a';
+  const sk = stats(kanchan), su = stats(kush), sc = stats(all);
+  const s  = activeTab === 'kanchan' ? sk : activeTab === 'kush' ? su : sc;
+
+  // Summary cards
+  const netAfterTax = s.gain - s.tax;
+  document.getElementById('summaryCards').innerHTML = `
+    <div class="card" style="border-top:3px solid ${accentColor}">
+      <div class="card-label">Sale Proceeds</div>
+      <div class="card-value" style="color:${accentColor}">${fmtINR(s.proc)}</div>
+      <div class="card-sub">${rows.length} lot${rows.length!==1?'s':''} · ${fmtUSD(rows.reduce((a,r)=>a+r.procUsd,0))} USD</div>
+    </div>
+    <div class="card" style="border-top:3px solid #7c3aed">
+      <div class="card-label">Cost Basis</div>
+      <div class="card-value c-purple">${fmtINR(s.cost)}</div>
+      <div class="card-sub">Original investment (INR)</div>
+    </div>
+    <div class="card" style="border-top:3px solid ${s.gain>=0?'#16a34a':'#dc2626'}">
+      <div class="card-label">Net Capital Gain</div>
+      <div class="card-value ${s.gain>=0?'c-green':'c-red'}">${sgn(s.gain)}${fmtINR(s.gain)}</div>
+      <div class="card-sub">${sgn(s.gainU)}${fmtUSD(s.gainU)} in USD</div>
+    </div>
+    <div class="card" style="border-top:3px solid #ea580c">
+      <div class="card-label">Est. Tax</div>
+      <div class="card-value c-orange">${fmtINR(s.tax)}</div>
+      <div class="card-sub">LTCG 12.5% + STCG 30%</div>
+    </div>
+    <div class="card" style="border-top:3px solid #16a34a">
+      <div class="card-label">Net After Tax</div>
+      <div class="card-value c-green">${fmtINR(netAfterTax)}</div>
+      <div class="card-sub">All proceeds after tax</div>
+    </div>
+    ${activeTab === 'combined' ? `
+    <div class="card" style="border-top:3px solid #0f172a;background:#f8fafc">
+      <div class="card-label">Kanchan · Net Gain</div>
+      <div class="card-value" style="font-size:1.2rem;color:#7c3aed">${fmtINR(sk.gain)}</div>
+      <div class="card-sub">Tax: ${fmtINR(sk.tax)}</div>
+    </div>
+    <div class="card" style="border-top:3px solid #0f172a;background:#f8fafc">
+      <div class="card-label">Kush · Net Gain</div>
+      <div class="card-value" style="font-size:1.2rem;color:#2563eb">${fmtINR(su.gain)}</div>
+      <div class="card-sub">Tax: ${fmtINR(su.tax)}</div>
+    </div>` : ''}
+  `;
+
+  // Tax box
+  document.getElementById('taxBox').innerHTML = `
+    <div style="border-left:4px solid #16a34a;background:#f0fdf4;border-radius:8px;padding:12px 14px;margin-bottom:10px">
+      <div style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#16a34a;margin-bottom:6px">🟢 LTCG — Long Term (held &gt; 24 months)</div>
+      <div class="tax-row" style="border-color:#dcfce7"><span style="color:#166534">Taxable gain</span><span style="color:#166534;font-weight:700">${fmtINR(Math.max(0,s.ltcg))}</span></div>
+      <div class="tax-row" style="border-color:#dcfce7"><span style="color:#166534">Rate</span><span style="color:#166534;font-weight:700">12.5% (no indexation)</span></div>
+      <div class="tax-row" style="border:none"><span style="color:#166534;font-weight:800">Tax payable</span><span style="color:#16a34a;font-weight:800;font-size:1rem">${fmtINR(s.ltcg>0?s.ltcg*0.125:0)}</span></div>
+    </div>
+    <div style="border-left:4px solid #d97706;background:#fffbeb;border-radius:8px;padding:12px 14px;margin-bottom:10px">
+      <div style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#d97706;margin-bottom:6px">🟡 STCG — Short Term (held ≤ 24 months)</div>
+      <div class="tax-row" style="border-color:#fef3c7"><span style="color:#92400e">Taxable gain</span><span style="color:#92400e;font-weight:700">${fmtINR(Math.max(0,s.stcg))}</span></div>
+      <div class="tax-row" style="border-color:#fef3c7"><span style="color:#92400e">Rate</span><span style="color:#92400e;font-weight:700">Slab rate (~30%)</span></div>
+      <div class="tax-row" style="border:none"><span style="color:#92400e;font-weight:800">Tax payable</span><span style="color:#d97706;font-weight:800;font-size:1rem">${fmtINR(s.stcg>0?s.stcg*0.30:0)}</span></div>
+    </div>
+    <div style="background:#fef2f2;border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-weight:800;color:#991b1b">Total Estimated Tax</span>
+      <span style="font-weight:800;font-size:1.1rem;color:#dc2626">${fmtINR(s.tax)}</span>
+    </div>
+  `;
+
+  // Table
+  const hasPerson = activeTab === 'combined';
+  const COLS = hasPerson ? 17 : 16;
+  const colPerson = hasPerson ? '<th>Person</th>' : '';
+  document.getElementById('txHead').innerHTML = `
+    <th>Ticker</th><th>Company</th>${colPerson}<th>Buy Date</th><th>Sell Date</th>
+    <th>Days</th><th>Type</th><th>Qty</th><th>Buy $</th><th>Sell $</th>
+    <th>₹/$ Buy</th><th>₹/$ Sell</th><th>Cost (₹)</th><th>Proceeds (₹)</th>
+    <th>Gain/Loss (₹)</th><th>Gain/Loss ($)</th><th>Est.Tax (₹)</th>
+  `;
+
+  function txRow(r) {
+    return `<tr>
+      <td><strong>${r.ticker}</strong></td>
+      <td style="font-size:.78rem">${r.company}</td>
+      ${hasPerson?`<td><span class="badge ${r.person==='Kanchan'?'b-kanchan':'b-kush'}">${r.person}</span></td>`:''}
+      <td style="font-size:.78rem">${r.buy_date}</td>
+      <td style="font-size:.78rem">${r.sell_date}</td>
+      <td style="font-size:.78rem;color:#64748b">${r.days}d</td>
+      <td><span class="badge ${r.type==='LTCG'?'b-ltcg':'b-stcg'}">${r.type}</span></td>
+      <td>${r.sell_qty}</td>
+      <td>$${(+r.buy_price_usd).toFixed(2)}</td>
+      <td>$${(+r.sell_price_usd).toFixed(2)}</td>
+      <td style="font-size:.78rem;color:#64748b">₹${r.usd_inr_buy}</td>
+      <td style="font-size:.78rem;color:#64748b">₹${r.usd_inr_sell}</td>
+      <td>${fmtINR(r.costInr)}</td>
+      <td>${fmtINR(r.procInr)}</td>
+      <td><span class="badge ${r.gainInr>=0?'b-gain':'b-loss'}">${sgn(r.gainInr)}${fmtINR(r.gainInr)}</span></td>
+      <td style="color:${r.gainUsd>=0?'#16a34a':'#dc2626'}">${sgn(r.gainUsd)}${fmtUSD(r.gainUsd)}</td>
+      <td style="color:#ea580c">${fmtINR(r.taxInr)}</td>
+    </tr>`;
+  }
+
+  function groupHeader(type, grpRows) {
+    const isLT   = type === 'LTCG';
+    const bg     = isLT ? '#f0fdf4' : '#fffbeb';
+    const border = isLT ? '#16a34a' : '#d97706';
+    const label  = isLT ? '🟢 LTCG — Long Term Capital Gains (held > 24 months) · Tax rate: 12.5% (no indexation)' :
+                          '🟡 STCG — Short Term Capital Gains (held ≤ 24 months) · Tax rate: Slab rate ~30%';
+    const count  = grpRows.length;
+    return `<tr style="background:${bg};border-left:4px solid ${border}">
+      <td colspan="${COLS}" style="padding:10px 14px;font-size:.8rem;font-weight:800;color:${border}">
+        ${label} &nbsp;<span style="font-weight:400;color:#64748b">(${count} lot${count!==1?'s':''})</span>
+      </td>
+    </tr>`;
+  }
+
+  function subtotalRow(type, grpRows) {
+    if (!grpRows.length) return '';
+    const isLT    = type === 'LTCG';
+    const bg      = isLT ? '#f0fdf4' : '#fffbeb';
+    const border  = isLT ? '#16a34a' : '#d97706';
+    const taxRate = isLT ? 0.125 : 0.30;
+    const totCost = grpRows.reduce((a,r)=>a+r.costInr,0);
+    const totProc = grpRows.reduce((a,r)=>a+r.procInr,0);
+    const totGain = grpRows.reduce((a,r)=>a+r.gainInr,0);
+    const totGainU= grpRows.reduce((a,r)=>a+r.gainUsd,0);
+    const totTax  = grpRows.reduce((a,r)=>a+r.taxInr,0);
+    const blankMid = hasPerson ? 9 : 8;
+    return `<tr style="background:${bg};border-left:4px solid ${border};font-weight:800;font-size:.82rem">
+      <td colspan="${blankMid}" style="padding:9px 14px;color:${border}">Subtotal — ${type} (${grpRows.length} lot${grpRows.length!==1?'s':''})</td>
+      <td style="padding:9px 13px">${fmtINR(totCost)}</td>
+      <td style="padding:9px 13px">${fmtINR(totProc)}</td>
+      <td style="padding:9px 13px"><span class="badge ${totGain>=0?'b-gain':'b-loss'}">${sgn(totGain)}${fmtINR(totGain)}</span></td>
+      <td style="padding:9px 13px;color:${totGainU>=0?'#16a34a':'#dc2626'}">${sgn(totGainU)}${fmtUSD(totGainU)}</td>
+      <td style="padding:9px 13px;color:#ea580c">${fmtINR(totTax)}</td>
+    </tr>`;
+  }
+
+  const ltcgRows = rows.filter(r => r.type === 'LTCG');
+  const stcgRows = rows.filter(r => r.type === 'STCG');
+  let bodyHTML = '';
+  if (!rows.length) {
+    bodyHTML = `<tr><td colspan="${COLS}" style="text-align:center;color:#94a3b8;padding:32px">No transactions yet.</td></tr>`;
+  } else {
+    if (ltcgRows.length) {
+      bodyHTML += groupHeader('LTCG', ltcgRows);
+      bodyHTML += ltcgRows.map(txRow).join('');
+      bodyHTML += subtotalRow('LTCG', ltcgRows);
+    }
+    if (stcgRows.length) {
+      bodyHTML += groupHeader('STCG', stcgRows);
+      bodyHTML += stcgRows.map(txRow).join('');
+      bodyHTML += subtotalRow('STCG', stcgRows);
+    }
+  }
+  document.getElementById('txBody').innerHTML = bodyHTML;
+
+  // Property box — LTCG only (Section 54F: only long-term capital gains qualify)
+  const target      = 20000000;
+  const ltcgNetK    = Math.max(0, sk.ltcg - (sk.ltcg > 0 ? sk.ltcg * 0.125 : 0));
+  const ltcgNetU    = Math.max(0, su.ltcg - (su.ltcg > 0 ? su.ltcg * 0.125 : 0));
+  const ltcgNetAll  = ltcgNetK + ltcgNetU;
+  const pct         = Math.min(100, ltcgNetAll / target * 100).toFixed(1);
+  const stcgNetAll  = Math.max(0, sc.stcg - (sc.stcg > 0 ? sc.stcg * 0.30 : 0));
+  document.getElementById('propertyBox').innerHTML = `
+    <div style="background:#fef9c3;border-left:4px solid #ca8a04;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.8rem;color:#713f12">
+      <strong>Section 54F note:</strong> Only LTCG (held &gt;24 months) qualifies for property purchase exemption. STCG proceeds shown separately below.
+    </div>
+    <div class="info-row"><span style="color:#64748b">🟢 LTCG net proceeds — Kanchan</span><span style="color:#7c3aed;font-weight:700">${fmtINR(ltcgNetK)}</span></div>
+    <div class="info-row"><span style="color:#64748b">🟢 LTCG net proceeds — Kush</span><span style="color:#2563eb;font-weight:700">${fmtINR(ltcgNetU)}</span></div>
+    <div class="info-row" style="border-top:2px solid #e2e8f0;margin-top:4px;padding-top:10px">
+      <span style="font-weight:800">LTCG total (property eligible)</span>
+      <span style="font-weight:800;color:#16a34a;font-size:1rem">${fmtINR(ltcgNetAll)}</span>
+    </div>
+    <div style="margin:14px 0 6px">
+      <div style="display:flex;justify-content:space-between;font-size:.78rem;font-weight:700;color:#374151;margin-bottom:6px">
+        <span>Progress toward ₹2 crore property fund (LTCG only)</span><span>${pct}%</span>
+      </div>
+      <div style="height:14px;background:#e2e8f0;border-radius:99px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#7c3aed,#22c55e);border-radius:99px"></div>
+      </div>
+    </div>
+    <div class="info-row"><span style="color:#64748b">Still needed (for ₹2Cr target)</span><span style="color:#ea580c;font-weight:700">${fmtINR(Math.max(0, target - ltcgNetAll))}</span></div>
+    <div class="info-row" style="background:#fffbeb;border-radius:8px;padding:8px 12px;margin-top:8px">
+      <span style="color:#92400e;font-size:.8rem">🟡 STCG net proceeds (NOT property-eligible)</span>
+      <span style="color:#d97706;font-weight:700">${fmtINR(stcgNetAll)}</span>
+    </div>
+  `;
+
+  // Charts
+  const byTicker = {};
+  rows.forEach(r => { byTicker[r.ticker] = (byTicker[r.ticker]||0) + r.gainInr; });
+  const tickers = Object.keys(byTicker);
+  const gains   = tickers.map(t => Math.round(byTicker[t]));
+
+  if (chartA) chartA.destroy();
+  const c1 = document.getElementById('stockChart').getContext('2d');
+  chartA = tickers.length
+    ? new Chart(c1, { type:'bar', data:{ labels:tickers, datasets:[{ data:gains, backgroundColor:gains.map(g=>g>=0?accentColor:'#ef4444'), borderRadius:6 }] }, options:{ plugins:{legend:{display:false}}, scales:{y:{ticks:{callback:v=>'₹'+(v/100000).toFixed(1)+'L'}}}} })
+    : (c1.font='14px sans-serif', c1.fillStyle='#94a3b8', c1.fillText('No data', 120, 110), null);
+
+  if (chartB) chartB.destroy();
+  const c2 = document.getElementById('gainTypeChart').getContext('2d');
+  chartB = (s.ltcg > 0 || s.stcg > 0)
+    ? new Chart(c2, { type:'doughnut', data:{ labels:['LTCG (>24m)','STCG (≤24m)'], datasets:[{ data:[Math.max(0,s.ltcg),Math.max(0,s.stcg)], backgroundColor:['#22c55e','#f59e0b'], borderWidth:2 }] }, options:{ plugins:{legend:{position:'bottom',labels:{font:{size:11}}}}} })
+    : (c2.font='14px sans-serif', c2.fillStyle='#94a3b8', c2.fillText('No data', 120, 110), null);
+
+  document.getElementById('lastUpdated').textContent = new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+}
+
+// ── Import ────────────────────────────────────────────────────────────────
+function importCSV(person) {
+  const text = document.getElementById('csvInput').value.trim();
+  if (!text) return alert('Paste a CSV row first.');
+  const rows = load();
+  let added = 0;
+  text.split('\n').filter(l=>l.trim()&&!l.startsWith('id,')).forEach(line => {
+    const c = line.split(',').map(x=>x.trim());
+    if (c.length < 12) { alert('Need ≥12 columns:\n'+line); return; }
+    rows.push({ id:Date.now()+Math.random(), person,
+      ticker:c[0].toUpperCase(), company:c[1], account:c[2],
+      buy_date:c[3], buy_price_usd:+c[4], buy_qty:+c[5],
+      sell_date:c[6], sell_price_usd:+c[7], sell_qty:+c[8],
+      usd_inr_buy:+c[9], usd_inr_sell:+c[10], brokerage_usd:+c[11]||0, notes:c[12]||'' });
+    added++;
+  });
+  save(rows);
+  document.getElementById('csvInput').value = '';
+  // switch to that person's tab
+  switchTab(person.toLowerCase());
+  alert(`✅ Added ${added} row${added!==1?'s':''} for ${person}.`);
+}
+
+// ── Export ────────────────────────────────────────────────────────────────
+function exportCSV(who) {
+  const rows = load().filter(r => who==='all' || r.person===who.charAt(0).toUpperCase()+who.slice(1));
+  const hdr  = 'id,person,ticker,company,account,buy_date,buy_price_usd,buy_qty,sell_date,sell_price_usd,sell_qty,usd_inr_buy,usd_inr_sell,brokerage_usd,notes';
+  const body = rows.map(r=>[r.id,r.person,r.ticker,r.company,r.account,r.buy_date,r.buy_price_usd,r.buy_qty,r.sell_date,r.sell_price_usd,r.sell_qty,r.usd_inr_buy,r.usd_inr_sell,r.brokerage_usd,r.notes].join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([hdr+'\n'+body],{type:'text/csv'}));
+  a.download = `stocks_${who}.csv`;
+  a.click();
+}
+
+function clearAll() {
+  if (confirm('Delete ALL transactions? Cannot be undone.')) { localStorage.removeItem(KEY); render(); }
+}
+
+render();
+</script>
+</body>
+</html>
