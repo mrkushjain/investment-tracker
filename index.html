@@ -553,10 +553,37 @@ const SEED = [
   {id:46,person:'Kush',ticker:'ICICIBANK',company:'ICICI Bank',account:'Zerodha',market:'IN',
    buy_date:'2022-03-15',buy_price_inr:696,buy_qty:10,
    sell_date:'2026-09-11',sell_price_inr:1401,sell_qty:10,brokerage_inr:0,notes:'Zerodha delivery · lot 4'},
+
+  // ── Kush — TMCV (Zerodha, DEMERGER) · selling Sep-11-2026 @ ₹446 limit ──────
+  // All via demerger. All LTCG (>12 months). LTCG ₹1,44,962.
+  {id:47,person:'Kush',ticker:'TMCV',company:'Tata Motors Consumer Vehicles',account:'Zerodha',market:'IN',
+   buy_date:'2024-06-04',buy_price_inr:286.50,buy_qty:100,sell_date:'2026-09-11',sell_price_inr:446,sell_qty:100,brokerage_inr:0,notes:'demerger · lot 1'},
+  {id:48,person:'Kush',ticker:'TMCV',company:'Tata Motors Consumer Vehicles',account:'Zerodha',market:'IN',
+   buy_date:'2024-06-04',buy_price_inr:283.78,buy_qty:100,sell_date:'2026-09-11',sell_price_inr:446,sell_qty:100,brokerage_inr:0,notes:'demerger · lot 2'},
+  {id:49,person:'Kush',ticker:'TMCV',company:'Tata Motors Consumer Vehicles',account:'Zerodha',market:'IN',
+   buy_date:'2023-07-06',buy_price_inr:187.30,buy_qty:129,sell_date:'2026-09-11',sell_price_inr:446,sell_qty:129,brokerage_inr:0,notes:'demerger · lot 3'},
+  {id:50,person:'Kush',ticker:'TMCV',company:'Tata Motors Consumer Vehicles',account:'Zerodha',market:'IN',
+   buy_date:'2023-07-06',buy_price_inr:187.37,buy_qty:84,sell_date:'2026-09-11',sell_price_inr:446,sell_qty:84,brokerage_inr:0,notes:'demerger · lot 4'},
+  {id:51,person:'Kush',ticker:'TMCV',company:'Tata Motors Consumer Vehicles',account:'Zerodha',market:'IN',
+   buy_date:'2023-07-06',buy_price_inr:187.32,buy_qty:48,sell_date:'2026-09-11',sell_price_inr:446,sell_qty:48,brokerage_inr:0,notes:'demerger · lot 5'},
+  {id:52,person:'Kush',ticker:'TMCV',company:'Tata Motors Consumer Vehicles',account:'Zerodha',market:'IN',
+   buy_date:'2023-07-06',buy_price_inr:187.34,buy_qty:1,sell_date:'2026-09-11',sell_price_inr:446,sell_qty:1,brokerage_inr:0,notes:'demerger · lot 6'},
+  {id:53,person:'Kush',ticker:'TMCV',company:'Tata Motors Consumer Vehicles',account:'Zerodha',market:'IN',
+   buy_date:'2022-04-20',buy_price_inr:135.19,buy_qty:3,sell_date:'2026-09-11',sell_price_inr:446,sell_qty:3,brokerage_inr:0,notes:'demerger · lot 7'},
+  {id:54,person:'Kush',ticker:'TMCV',company:'Tata Motors Consumer Vehicles',account:'Zerodha',market:'IN',
+   buy_date:'2022-04-04',buy_price_inr:139.24,buy_qty:1,sell_date:'2026-09-11',sell_price_inr:446,sell_qty:1,brokerage_inr:0,notes:'demerger · lot 8'},
+  {id:55,person:'Kush',ticker:'TMCV',company:'Tata Motors Consumer Vehicles',account:'Zerodha',market:'IN',
+   buy_date:'2022-04-04',buy_price_inr:139.55,buy_qty:80,sell_date:'2026-09-11',sell_price_inr:446,sell_qty:80,brokerage_inr:0,notes:'demerger · lot 9'},
+  {id:56,person:'Kush',ticker:'TMCV',company:'Tata Motors Consumer Vehicles',account:'Zerodha',market:'IN',
+   buy_date:'2022-04-01',buy_price_inr:135.19,buy_qty:11,sell_date:'2026-09-11',sell_price_inr:446,sell_qty:11,brokerage_inr:0,notes:'demerger · lot 10'},
+  {id:57,person:'Kush',ticker:'TMCV',company:'Tata Motors Consumer Vehicles',account:'Zerodha',market:'IN',
+   buy_date:'2022-04-01',buy_price_inr:135.50,buy_qty:50,sell_date:'2026-09-11',sell_price_inr:446,sell_qty:50,brokerage_inr:0,notes:'demerger · lot 11'},
+  {id:58,person:'Kush',ticker:'TMCV',company:'Tata Motors Consumer Vehicles',account:'Zerodha',market:'IN',
+   buy_date:'2022-03-15',buy_price_inr:127.72,buy_qty:1,sell_date:'2026-09-11',sell_price_inr:446,sell_qty:1,brokerage_inr:0,notes:'demerger · lot 12'},
 ];
 
 // ── Store ─────────────────────────────────────────────────────────────────
-const KEY = 'us_stocks_v7';
+const KEY = 'us_stocks_v8';
 function load() {
   try {
     const s = JSON.parse(localStorage.getItem(KEY));
@@ -786,26 +813,32 @@ function render() {
   }
   document.getElementById('txBody').innerHTML = bodyHTML;
 
-  // Property box — LTCG only (Section 54F: only long-term capital gains qualify)
+  // Property box — LTCG (US + Indian) · Section 54F: all LTCG qualifies
   const target      = 20000000;
+  const inKLTCG_p   = inKanchan.filter(r=>r.type==='LTCG').reduce((a,r)=>a+r.gainInr,0);
+  const inULTCG_p   = inKush.filter(r=>r.type==='LTCG').reduce((a,r)=>a+r.gainInr,0);
   const ltcgNetK    = Math.max(0, sk.ltcg - (sk.ltcg > 0 ? sk.ltcg * 0.125 : 0));
   const ltcgNetU    = Math.max(0, su.ltcg - (su.ltcg > 0 ? su.ltcg * 0.125 : 0));
-  const ltcgNetAll  = ltcgNetK + ltcgNetU;
+  const inLtcgNetK  = Math.max(0, inKLTCG_p - Math.max(0, inKLTCG_p - 125000) * 0.125);
+  const inLtcgNetU  = Math.max(0, inULTCG_p - Math.max(0, inULTCG_p - 125000) * 0.125);
+  const ltcgNetAll  = ltcgNetK + ltcgNetU + inLtcgNetK + inLtcgNetU;
   const pct         = Math.min(100, ltcgNetAll / target * 100).toFixed(1);
   const stcgNetAll  = Math.max(0, sc.stcg - (sc.stcg > 0 ? sc.stcg * 0.30 : 0));
   document.getElementById('propertyBox').innerHTML = `
     <div style="background:#fef9c3;border-left:4px solid #ca8a04;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.8rem;color:#713f12">
-      <strong>Section 54F note:</strong> Only LTCG (held &gt;24 months) qualifies for property purchase exemption. STCG proceeds shown separately below.
+      <strong>Section 54F note:</strong> All LTCG (US stocks &gt;24m · Indian stocks &gt;12m) qualifies. STCG proceeds shown separately below.
     </div>
-    <div class="info-row"><span style="color:#64748b">🟢 LTCG net proceeds — Kanchan</span><span style="color:#7c3aed;font-weight:700">${fmtINR(ltcgNetK)}</span></div>
-    <div class="info-row"><span style="color:#64748b">🟢 LTCG net proceeds — Kush</span><span style="color:#2563eb;font-weight:700">${fmtINR(ltcgNetU)}</span></div>
+    <div class="info-row"><span style="color:#64748b">🇺🇸 US LTCG net — Kanchan</span><span style="color:#7c3aed;font-weight:700">${fmtINR(ltcgNetK)}</span></div>
+    <div class="info-row"><span style="color:#64748b">🇺🇸 US LTCG net — Kush</span><span style="color:#2563eb;font-weight:700">${fmtINR(ltcgNetU)}</span></div>
+    ${inLtcgNetK > 0 ? `<div class="info-row"><span style="color:#64748b">🇮🇳 Indian LTCG net — Kanchan</span><span style="color:#7c3aed;font-weight:700">${fmtINR(inLtcgNetK)}</span></div>` : ''}
+    ${inLtcgNetU > 0 ? `<div class="info-row"><span style="color:#64748b">🇮🇳 Indian LTCG net — Kush</span><span style="color:#2563eb;font-weight:700">${fmtINR(inLtcgNetU)}</span></div>` : ''}
     <div class="info-row" style="border-top:2px solid #e2e8f0;margin-top:4px;padding-top:10px">
-      <span style="font-weight:800">LTCG total (property eligible)</span>
+      <span style="font-weight:800">LTCG total (US + Indian, property eligible)</span>
       <span style="font-weight:800;color:#16a34a;font-size:1rem">${fmtINR(ltcgNetAll)}</span>
     </div>
     <div style="margin:14px 0 6px">
       <div style="display:flex;justify-content:space-between;font-size:.78rem;font-weight:700;color:#374151;margin-bottom:6px">
-        <span>Progress toward ₹2 crore property fund (LTCG only)</span><span>${pct}%</span>
+        <span>Progress toward ₹2 crore property fund</span><span>${pct}%</span>
       </div>
       <div style="height:14px;background:#e2e8f0;border-radius:99px;overflow:hidden">
         <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#7c3aed,#22c55e);border-radius:99px"></div>

@@ -45,3 +45,15 @@ id,person,ticker,company,account,buy_date,buy_price_usd,buy_qty,sell_date,sell_p
 44,Kush,ICICIBANK,ICICI Bank,Zerodha,2022-04-01,727,10,2026-09-11,1401,10,,,0,Zerodha delivery · lot 2 · market:IN
 45,Kush,ICICIBANK,ICICI Bank,Zerodha,2022-03-15,696,1,2026-09-11,1401,1,,,0,Zerodha delivery · lot 3 · market:IN
 46,Kush,ICICIBANK,ICICI Bank,Zerodha,2022-03-15,696,10,2026-09-11,1401,10,,,0,Zerodha delivery · lot 4 · market:IN
+47,Kush,TMCV,Tata Motors Consumer Vehicles,Zerodha,2024-06-04,286.50,100,2026-09-11,446,100,,,0,demerger · lot 1 · market:IN
+48,Kush,TMCV,Tata Motors Consumer Vehicles,Zerodha,2024-06-04,283.78,100,2026-09-11,446,100,,,0,demerger · lot 2 · market:IN
+49,Kush,TMCV,Tata Motors Consumer Vehicles,Zerodha,2023-07-06,187.30,129,2026-09-11,446,129,,,0,demerger · lot 3 · market:IN
+50,Kush,TMCV,Tata Motors Consumer Vehicles,Zerodha,2023-07-06,187.37,84,2026-09-11,446,84,,,0,demerger · lot 4 · market:IN
+51,Kush,TMCV,Tata Motors Consumer Vehicles,Zerodha,2023-07-06,187.32,48,2026-09-11,446,48,,,0,demerger · lot 5 · market:IN
+52,Kush,TMCV,Tata Motors Consumer Vehicles,Zerodha,2023-07-06,187.34,1,2026-09-11,446,1,,,0,demerger · lot 6 · market:IN
+53,Kush,TMCV,Tata Motors Consumer Vehicles,Zerodha,2022-04-20,135.19,3,2026-09-11,446,3,,,0,demerger · lot 7 · market:IN
+54,Kush,TMCV,Tata Motors Consumer Vehicles,Zerodha,2022-04-04,139.24,1,2026-09-11,446,1,,,0,demerger · lot 8 · market:IN
+55,Kush,TMCV,Tata Motors Consumer Vehicles,Zerodha,2022-04-04,139.55,80,2026-09-11,446,80,,,0,demerger · lot 9 · market:IN
+56,Kush,TMCV,Tata Motors Consumer Vehicles,Zerodha,2022-04-01,135.19,11,2026-09-11,446,11,,,0,demerger · lot 10 · market:IN
+57,Kush,TMCV,Tata Motors Consumer Vehicles,Zerodha,2022-04-01,135.50,50,2026-09-11,446,50,,,0,demerger · lot 11 · market:IN
+58,Kush,TMCV,Tata Motors Consumer Vehicles,Zerodha,2022-03-15,127.72,1,2026-09-11,446,1,,,0,demerger · lot 12 · market:IN
