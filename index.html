@@ -146,6 +146,7 @@ footer{text-align:center;padding:20px 32px;font-size:.75rem;color:#94a3b8;border
   <div class="charts-grid">
     <div class="chart-box"><div class="chart-title">Gain / Loss by Stock (INR)</div><canvas id="stockChart" height="220"></canvas></div>
     <div class="chart-box"><div class="chart-title">LTCG vs STCG Split (INR)</div><canvas id="gainTypeChart" height="220"></canvas></div>
+    <div class="chart-box"><div class="chart-title">🇮🇳 Indian LTCG vs ₹1.25L Exemption</div><canvas id="indiaLTCGChart" height="220"></canvas></div>
   </div>
 </div>
 
@@ -173,6 +174,14 @@ footer{text-align:center;padding:20px 32px;font-size:.75rem;color:#94a3b8;border
       <tbody id="txBody"></tbody>
     </table>
   </div>
+</div>
+
+<div class="section">
+  <div class="section-title">🇮🇳 Indian Stocks — Capital Gains</div>
+  <div style="overflow-x:auto;margin-bottom:16px">
+    <table><thead><tr id="indiaTxHead"></tr></thead><tbody id="indiaTxBody"></tbody></table>
+  </div>
+  <div id="indiaExemptionBox" class="info-box"></div>
 </div>
 
 <div class="section">
@@ -362,7 +371,7 @@ const SEED = [
     notes:'IndMoney SIP · invested $625.85 · pre-split $2545.20 · SBI TTBR Apr-2022 ₹75.85'
   },
 
-  // ── Kanchan — AMZN (IndMoney fractional) · sell Sep-02-2026 @ $256.5 limit 1-day ──
+  // ── Kanchan — AMZN (IndMoney fractional) · ⚠️ order Sep-02-2026 @ $256.5 did NOT execute ──
   // All bought Mar–May 2022 (pre-AMZN 20:1 split Jun-06-2022). Prices are post-split (original/20).
   // Total charges $32.31 for 218.97248616 shares = $0.14757/share, distributed pro-rata below.
   // SBI TTBR confirmed: Mar 2022 ₹74.97 · Apr 2022 ₹75.85 · May 2022 ₹76.90
@@ -371,168 +380,183 @@ const SEED = [
   {
     id:20, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-03-14', buy_price_usd:145.98, buy_qty:0.0893,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:0.0893,
-    usd_inr_buy:74.97, usd_inr_sell:94.50, brokerage_usd:0.01,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:74.97, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $13.04 · pre-split $2919.62 · AMZN 20:1 split Jun-06-2022 · SBI TTBR Mar-2022 ₹74.97'
   },
   {
     id:21, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-03-15', buy_price_usd:145.41, buy_qty:1.6893,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:1.6893,
-    usd_inr_buy:74.97, usd_inr_sell:94.50, brokerage_usd:0.25,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:74.97, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $245.63 · pre-split $2908.13 · SBI TTBR Mar-2022 ₹74.97'
   },
   {
     id:22, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-03-26', buy_price_usd:164.98, buy_qty:1.8108,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:1.8108,
-    usd_inr_buy:74.97, usd_inr_sell:94.50, brokerage_usd:0.27,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:74.97, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $298.75 · pre-split $3299.50 · SBI TTBR Mar-2022 ₹74.97'
   },
   {
     id:23, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-03-31', buy_price_usd:164.78, buy_qty:1.8206,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:1.8206,
-    usd_inr_buy:74.97, usd_inr_sell:94.50, brokerage_usd:0.27,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:74.97, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $300.00 · pre-split $3295.60 · SBI TTBR Mar-2022 ₹74.97'
   },
   {
     id:24, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-04-01', buy_price_usd:164.15, buy_qty:0.3777,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:0.3777,
-    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:0.06,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:75.85, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $62.00 · pre-split $3282.99 · SBI TTBR Apr-2022 ₹75.85'
   },
   {
     id:25, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-04-06', buy_price_usd:158.52, buy_qty:0.5992,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:0.5992,
-    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:0.09,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:75.85, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $95.00 · pre-split $3170.34 · SBI TTBR Apr-2022 ₹75.85'
   },
   {
     id:26, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-04-06', buy_price_usd:157.42, buy_qty:1.9054,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:1.9054,
-    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:0.28,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:75.85, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $300.00 · pre-split $3148.41 · SBI TTBR Apr-2022 ₹75.85'
   },
   {
     id:27, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-04-06', buy_price_usd:158.98, buy_qty:3.1451,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:3.1451,
-    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:0.46,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:75.85, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $500.00 · pre-split $3179.66 · SBI TTBR Apr-2022 ₹75.85'
   },
   {
     id:28, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-04-26', buy_price_usd:140.80, buy_qty:1.0937,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:1.0937,
-    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:0.16,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:75.85, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $154.00 · pre-split $2816.04 · SBI TTBR Apr-2022 ₹75.85'
   },
   {
     id:29, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-04-26', buy_price_usd:140.92, buy_qty:20.0000,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:20.0000,
-    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:2.95,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:75.85, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $2818.48 · pre-split $2818.48 (exactly 1 pre-split share) · SBI TTBR Apr-2022 ₹75.85'
   },
   {
     id:30, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-04-27', buy_price_usd:140.19, buy_qty:6.8975,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:6.8975,
-    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:1.02,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:75.85, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $967.00 · pre-split $2803.83 · SBI TTBR Apr-2022 ₹75.85'
   },
   {
     id:31, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-04-29', buy_price_usd:128.34, buy_qty:7.5328,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:7.5328,
-    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:1.11,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:75.85, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $966.75 · pre-split $2566.87 · SBI TTBR Apr-2022 ₹75.85'
   },
   {
     id:32, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-04-29', buy_price_usd:125.65, buy_qty:7.6957,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:7.6957,
-    usd_inr_buy:75.85, usd_inr_sell:94.50, brokerage_usd:1.14,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:75.85, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $967.00 · pre-split $2513.07 · SBI TTBR Apr-2022 ₹75.85'
   },
   {
     id:33, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-05-02', buy_price_usd:118.80, buy_qty:8.1564,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:8.1564,
-    usd_inr_buy:76.90, usd_inr_sell:94.50, brokerage_usd:1.20,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:76.90, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $969.00 · pre-split $2376.01 · SBI TTBR May-2022 ₹76.90'
   },
   {
     id:34, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-05-02', buy_price_usd:120.48, buy_qty:8.0103,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:8.0103,
-    usd_inr_buy:76.90, usd_inr_sell:94.50, brokerage_usd:1.18,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:76.90, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $965.00 · pre-split $2409.67 · SBI TTBR May-2022 ₹76.90'
   },
   {
     id:35, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-05-03', buy_price_usd:125.13, buy_qty:7.8955,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:7.8955,
-    usd_inr_buy:76.90, usd_inr_sell:94.50, brokerage_usd:1.17,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:76.90, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $988.00 · pre-split $2502.69 · SBI TTBR May-2022 ₹76.90'
   },
   {
     id:36, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-05-04', buy_price_usd:121.45, buy_qty:7.8222,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:7.8222,
-    usd_inr_buy:76.90, usd_inr_sell:94.50, brokerage_usd:1.15,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:76.90, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $950.00 · pre-split $2428.91 · SBI TTBR May-2022 ₹76.90'
   },
   {
     id:37, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-05-04', buy_price_usd:119.00, buy_qty:80.0000,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:80.0000,
-    usd_inr_buy:76.90, usd_inr_sell:94.50, brokerage_usd:11.81,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:76.90, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $9520.00 (4 pre-split shares) · pre-split $2380.00 · SBI TTBR May-2022 ₹76.90'
   },
   {
     id:38, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-05-04', buy_price_usd:120.49, buy_qty:17.7430,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:17.7430,
-    usd_inr_buy:76.90, usd_inr_sell:94.50, brokerage_usd:2.62,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:76.90, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $2138.00 · pre-split $2409.81 · SBI TTBR May-2022 ₹76.90'
   },
   {
     id:39, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-05-05', buy_price_usd:116.12, buy_qty:8.3966,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:8.3966,
-    usd_inr_buy:76.90, usd_inr_sell:94.50, brokerage_usd:1.24,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:76.90, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $975.00 · pre-split $2322.33 · SBI TTBR May-2022 ₹76.90'
   },
   {
     id:40, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-05-06', buy_price_usd:113.89, buy_qty:8.5699,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:8.5699,
-    usd_inr_buy:76.90, usd_inr_sell:94.50, brokerage_usd:1.26,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:76.90, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $976.00 · pre-split $2277.74 · SBI TTBR May-2022 ₹76.90'
   },
   {
     id:41, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-05-09', buy_price_usd:109.75, buy_qty:8.8934,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:8.8934,
-    usd_inr_buy:76.90, usd_inr_sell:94.50, brokerage_usd:1.31,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:76.90, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $976.00 · pre-split $2194.98 · SBI TTBR May-2022 ₹76.90'
   },
   {
     id:42, person:'Kanchan', ticker:'AMZN', company:'Amazon', account:'IndMoney',
     buy_date:'2022-05-10', buy_price_usd:109.66, buy_qty:8.8277,
-    sell_date:'2026-09-02', sell_price_usd:256.50, sell_qty:8.8277,
-    usd_inr_buy:76.90, usd_inr_sell:94.50, brokerage_usd:1.30,
+    sell_date:null, sell_price_usd:null, sell_qty:null,
+    usd_inr_buy:76.90, usd_inr_sell:null, brokerage_usd:0,
     notes:'IndMoney SIP · invested $968.00 · pre-split $2193.12 · SBI TTBR May-2022 ₹76.90'
   },
+  // ── Kush — ICICIBANK (Zerodha) · selling Sep-11-2026 @ ₹1401 limit ──────────
+  // Bought Mar–Apr 2022. Held >4 yrs → LTCG (12-month rule for Indian listed equity).
+  // Total LTCG ₹27,035 · well within ₹1.25L exemption → tax = ₹0.
+  {id:43,person:'Kush',ticker:'ICICIBANK',company:'ICICI Bank',account:'Zerodha',market:'IN',
+   buy_date:'2022-04-04',buy_price_inr:741,buy_qty:19,
+   sell_date:'2026-09-11',sell_price_inr:1401,sell_qty:19,brokerage_inr:0,notes:'Zerodha delivery · lot 1'},
+  {id:44,person:'Kush',ticker:'ICICIBANK',company:'ICICI Bank',account:'Zerodha',market:'IN',
+   buy_date:'2022-04-01',buy_price_inr:727,buy_qty:10,
+   sell_date:'2026-09-11',sell_price_inr:1401,sell_qty:10,brokerage_inr:0,notes:'Zerodha delivery · lot 2'},
+  {id:45,person:'Kush',ticker:'ICICIBANK',company:'ICICI Bank',account:'Zerodha',market:'IN',
+   buy_date:'2022-03-15',buy_price_inr:696,buy_qty:1,
+   sell_date:'2026-09-11',sell_price_inr:1401,sell_qty:1,brokerage_inr:0,notes:'Zerodha delivery · lot 3'},
+  {id:46,person:'Kush',ticker:'ICICIBANK',company:'ICICI Bank',account:'Zerodha',market:'IN',
+   buy_date:'2022-03-15',buy_price_inr:696,buy_qty:10,
+   sell_date:'2026-09-11',sell_price_inr:1401,sell_qty:10,brokerage_inr:0,notes:'Zerodha delivery · lot 4'},
 ];
 
 // ── Store ─────────────────────────────────────────────────────────────────
-const KEY = 'us_stocks_v5';
+const KEY = 'us_stocks_v7';
 function load() {
   try {
     const s = JSON.parse(localStorage.getItem(KEY));
@@ -555,10 +579,21 @@ function switchTab(tab) {
 
 // ── Calc ──────────────────────────────────────────────────────────────────
 function calcRow(r) {
+  if (r.market === 'IN') {
+    const sold    = !!(r.sell_date && r.sell_price_inr != null);
+    const costInr = r.buy_price_inr * r.buy_qty;
+    const procInr = sold ? r.sell_price_inr * r.sell_qty : 0;
+    const gainInr = sold ? procInr - costInr - (r.brokerage_inr||0) : 0;
+    const days    = sold ? Math.round((new Date(r.sell_date)-new Date(r.buy_date))/86400000) : 0;
+    const type    = sold && days > 365 ? 'LTCG' : (sold ? 'STCG' : '—');
+    return {...r, costInr, procInr, gainInr, days, type, taxInr:0, costUsd:0, procUsd:0, gainUsd:0};
+  }
+  const sold    = !!(r.sell_date && r.sell_price_usd != null);
   const costUsd = r.buy_price_usd * r.buy_qty;
+  const costInr = costUsd * r.usd_inr_buy;
+  if (!sold) return {...r, costUsd, procUsd:0, gainUsd:0, costInr, procInr:0, gainInr:0, days:0, type:'—', taxInr:0};
   const procUsd = r.sell_price_usd * r.sell_qty;
   const gainUsd = procUsd - costUsd - r.brokerage_usd;
-  const costInr = costUsd * r.usd_inr_buy;
   const procInr = procUsd * r.usd_inr_sell;
   const gainInr = procInr - costInr - (r.brokerage_usd * r.usd_inr_sell);
   const days    = Math.round((new Date(r.sell_date) - new Date(r.buy_date)) / 86400000);
@@ -573,27 +608,33 @@ const fmtUSD = v => '$' + Math.abs(+v).toFixed(2);
 const sgn    = v => v < 0 ? '−' : '';
 
 function stats(rows) {
+  const sold = rows.filter(r => r.type !== '—');
   return {
-    proc:  rows.reduce((s,r) => s+r.procInr, 0),
-    cost:  rows.reduce((s,r) => s+r.costInr, 0),
-    gain:  rows.reduce((s,r) => s+r.gainInr, 0),
-    gainU: rows.reduce((s,r) => s+r.gainUsd, 0),
-    ltcg:  rows.filter(r=>r.type==='LTCG').reduce((s,r)=>s+r.gainInr,0),
-    stcg:  rows.filter(r=>r.type==='STCG').reduce((s,r)=>s+r.gainInr,0),
-    tax:   rows.reduce((s,r)=>s+r.taxInr,0),
+    proc:  sold.reduce((s,r) => s+r.procInr, 0),
+    cost:  sold.reduce((s,r) => s+r.costInr, 0),
+    gain:  sold.reduce((s,r) => s+r.gainInr, 0),
+    gainU: sold.reduce((s,r) => s+r.gainUsd, 0),
+    ltcg:  sold.filter(r=>r.type==='LTCG').reduce((s,r)=>s+r.gainInr,0),
+    stcg:  sold.filter(r=>r.type==='STCG').reduce((s,r)=>s+r.gainInr,0),
+    tax:   sold.reduce((s,r)=>s+r.taxInr,0),
   };
 }
 
 // ── Render ────────────────────────────────────────────────────────────────
-let chartA, chartB;
+let chartA, chartB, chartC;
 
 function render() {
-  const all      = load().map(calcRow);
-  const kanchan  = all.filter(r => r.person === 'Kanchan');
-  const kush     = all.filter(r => r.person === 'Kush');
-  const rows     = activeTab === 'kanchan' ? kanchan : activeTab === 'kush' ? kush : all;
+  const all       = load().map(calcRow);
+  const usAll     = all.filter(r => r.market !== 'IN');
+  const inAll     = all.filter(r => r.market === 'IN');
+  const kanchan   = usAll.filter(r => r.person === 'Kanchan');
+  const kush      = usAll.filter(r => r.person === 'Kush');
+  const rows      = activeTab === 'kanchan' ? kanchan : activeTab === 'kush' ? kush : usAll;
+  const inKanchan = inAll.filter(r => r.person === 'Kanchan');
+  const inKush    = inAll.filter(r => r.person === 'Kush');
+  const inRows    = activeTab === 'kanchan' ? inKanchan : activeTab === 'kush' ? inKush : inAll;
   const accentColor = activeTab === 'kanchan' ? '#7c3aed' : activeTab === 'kush' ? '#2563eb' : '#0f172a';
-  const sk = stats(kanchan), su = stats(kush), sc = stats(all);
+  const sk = stats(kanchan), su = stats(kush), sc = stats(usAll);
   const s  = activeTab === 'kanchan' ? sk : activeTab === 'kush' ? su : sc;
 
   // Summary cards
@@ -794,6 +835,86 @@ function render() {
   chartB = (s.ltcg > 0 || s.stcg > 0)
     ? new Chart(c2, { type:'doughnut', data:{ labels:['LTCG (>24m)','STCG (≤24m)'], datasets:[{ data:[Math.max(0,s.ltcg),Math.max(0,s.stcg)], backgroundColor:['#22c55e','#f59e0b'], borderWidth:2 }] }, options:{ plugins:{legend:{position:'bottom',labels:{font:{size:11}}}}} })
     : (c2.font='14px sans-serif', c2.fillStyle='#94a3b8', c2.fillText('No data', 120, 110), null);
+
+  // ── Indian LTCG chart (always shows both people) ─────────────────────────
+  const EXEMPTION = 125000;
+  const inKLTCG = inKanchan.filter(r=>r.type==='LTCG').reduce((a,r)=>a+r.gainInr,0);
+  const inULTCG = inKush.filter(r=>r.type==='LTCG').reduce((a,r)=>a+r.gainInr,0);
+  if (chartC) chartC.destroy();
+  chartC = new Chart(document.getElementById('indiaLTCGChart').getContext('2d'), {
+    type:'bar',
+    data:{ labels:['Kanchan','Kush'], datasets:[{
+      data:[Math.round(inKLTCG), Math.round(inULTCG)],
+      backgroundColor:['rgba(124,58,237,0.78)','rgba(37,99,235,0.78)'],
+      borderRadius:8, barThickness:64
+    }]},
+    options:{
+      plugins:{ legend:{display:false} },
+      scales:{ y:{ max:EXEMPTION,
+        ticks:{callback:v=>'₹'+(v/1000).toFixed(0)+'k'},
+        title:{display:true,text:'← ₹1.25L exemption ceiling',font:{size:10},color:'#dc2626'}
+      }}
+    }
+  });
+
+  // ── Indian stocks table ────────────────────────────────────────────────────
+  const indHP  = activeTab === 'combined';
+  const colsIN = indHP ? 13 : 12;
+  document.getElementById('indiaTxHead').innerHTML = `
+    <th>Ticker</th><th>Company</th>${indHP?'<th>Person</th>':''}
+    <th>Buy Date</th><th>Sell Date</th><th>Days</th><th>Type</th><th>Qty</th>
+    <th>Buy ₹</th><th>Sell ₹</th><th>Cost (₹)</th><th>Proceeds (₹)</th><th>Gain (₹)</th>`;
+  function inRow(r) {
+    const sold = r.type !== '—';
+    return `<tr>
+      <td><strong>${r.ticker}</strong></td>
+      <td style="font-size:.78rem">${r.company}</td>
+      ${indHP?`<td><span class="badge ${r.person==='Kanchan'?'b-kanchan':'b-kush'}">${r.person}</span></td>`:''}
+      <td style="font-size:.78rem">${r.buy_date}</td>
+      <td style="font-size:.78rem">${r.sell_date||'—'}</td>
+      <td style="font-size:.78rem;color:#64748b">${r.days?r.days+'d':'—'}</td>
+      <td><span class="badge b-ltcg">${r.type}</span></td>
+      <td>${r.sell_qty||r.buy_qty}</td>
+      <td>₹${(+r.buy_price_inr).toLocaleString('en-IN')}</td>
+      <td>${sold?'₹'+(+r.sell_price_inr).toLocaleString('en-IN'):'—'}</td>
+      <td>${fmtINR(r.costInr)}</td>
+      <td>${sold?fmtINR(r.procInr):'—'}</td>
+      <td><span class="badge ${r.gainInr>0?'b-gain':r.gainInr<0?'b-loss':''}">${sold?sgn(r.gainInr)+fmtINR(r.gainInr):'—'}</span></td>
+    </tr>`;
+  }
+  const inLTCG = inRows.filter(r=>r.type==='LTCG');
+  const inSTCG = inRows.filter(r=>r.type==='STCG');
+  let inBody = '';
+  if (!inRows.length) {
+    inBody = `<tr><td colspan="${colsIN}" style="text-align:center;color:#94a3b8;padding:32px">No Indian stock transactions for this person.</td></tr>`;
+  } else {
+    if (inLTCG.length) inBody += `<tr style="background:#f0fdf4;border-left:4px solid #16a34a"><td colspan="${colsIN}" style="padding:10px 14px;font-size:.8rem;font-weight:800;color:#16a34a">🟢 LTCG — Held &gt;12 months · 12.5% rate · ₹1.25L/person/year exempt &nbsp;<span style="font-weight:400;color:#64748b">(${inLTCG.length} lot${inLTCG.length!==1?'s':''})</span></td></tr>` + inLTCG.map(inRow).join('');
+    if (inSTCG.length) inBody += `<tr style="background:#fffbeb;border-left:4px solid #d97706"><td colspan="${colsIN}" style="padding:10px 14px;font-size:.8rem;font-weight:800;color:#d97706">🟡 STCG — Held ≤12 months · 20% rate &nbsp;<span style="font-weight:400;color:#64748b">(${inSTCG.length} lot${inSTCG.length!==1?'s':''})</span></td></tr>` + inSTCG.map(inRow).join('');
+  }
+  document.getElementById('indiaTxBody').innerHTML = inBody;
+
+  // ── Indian exemption info box ──────────────────────────────────────────────
+  const inKPct = Math.min(100, inKLTCG/EXEMPTION*100).toFixed(1);
+  const inUPct = Math.min(100, inULTCG/EXEMPTION*100).toFixed(1);
+  const inKTax = Math.max(0, inKLTCG - EXEMPTION) * 0.125;
+  const inUTax = Math.max(0, inULTCG - EXEMPTION) * 0.125;
+  document.getElementById('indiaExemptionBox').innerHTML = `
+    <div style="font-size:.78rem;font-weight:700;color:#374151;margin-bottom:10px">🇮🇳 Indian LTCG Exemption — ₹1.25L per person per year (Budget 2024)</div>
+    <div class="info-row"><span style="color:#64748b">Kanchan — Indian LTCG</span>
+      <span style="color:#7c3aed;font-weight:700">${fmtINR(inKLTCG)} <span style="font-size:.74rem;color:${inKLTCG<=EXEMPTION?'#16a34a':'#dc2626'}">(${inKPct}% of limit)</span></span></div>
+    <div style="height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin:4px 0 10px">
+      <div style="height:100%;width:${inKPct}%;background:#7c3aed;border-radius:99px"></div></div>
+    <div class="info-row"><span style="color:#64748b">Kush — Indian LTCG</span>
+      <span style="color:#2563eb;font-weight:700">${fmtINR(inULTCG)} <span style="font-size:.74rem;color:${inULTCG<=EXEMPTION?'#16a34a':'#dc2626'}">(${inUPct}% of limit)</span></span></div>
+    <div style="height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin:4px 0 10px">
+      <div style="height:100%;width:${inUPct}%;background:#2563eb;border-radius:99px"></div></div>
+    <div style="background:#f0fdf4;border-radius:8px;padding:10px 14px;margin-top:4px;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:.85rem;font-weight:700;color:#166534">Indian LTCG tax (after exemption)</span>
+      <div style="text-align:right;font-size:.82rem">
+        <div style="color:#7c3aed">Kanchan: ${inKTax===0?'<span style=\'color:#16a34a\'>₹0 — exempt</span>':fmtINR(inKTax)}</div>
+        <div style="color:#2563eb">Kush: ${inUTax===0?'<span style=\'color:#16a34a\'>₹0 — exempt</span>':fmtINR(inUTax)}</div>
+      </div>
+    </div>`;
 
   document.getElementById('lastUpdated').textContent = new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
 }
